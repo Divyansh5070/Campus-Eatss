@@ -1,0 +1,1111 @@
+package com.example.cueats.HomeScreen
+
+import android.annotation.SuppressLint
+import android.content.res.Configuration
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.util.Calendar
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material3.placeholder
+import com.google.accompanist.placeholder.material3.shimmer
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.example.cueats.R
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+
+@SuppressLint("NewApi")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModernWeeklyMenuApp(navController: NavController) {
+    // Theme state
+    var isDarkTheme by remember { mutableStateOf(false) }
+
+    // Colors based on theme
+    val primaryOrange = Color(0xFFFF6B01)
+    val lightBackground = Color(0xFFF6F7FB)
+    val darkBackground = Color(0xFF121212)
+    val surfaceColor = if (isDarkTheme) Color(0xFF202020) else Color.White
+    val textColor = if (isDarkTheme) Color.White else Color.Black
+    val textSecondaryColor = if (isDarkTheme) Color.LightGray else Color.Gray
+    val headerColor = if (isDarkTheme) Color(0xFF303030) else Color.White
+    val dividerColor = if (isDarkTheme) Color(0xFF303030) else Color(0xFFEEEEEE)
+
+    // Function to find today's index in our days list
+    fun findTodayIndex(days: List<DayData>): Int {
+        if (days.isEmpty()) return 0
+
+        val calendar = Calendar.getInstance()
+        val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val todayString = dayFormat.format(calendar.time)
+
+        // First try to find exact date match
+        val exactMatch = days.indexOfFirst { it.date == todayString }
+        if (exactMatch >= 0) return exactMatch
+
+        // If no exact match, find the closest upcoming day
+        try {
+            val today = dayFormat.parse(todayString)?.time ?: return 0
+
+            var closestIndex = 0
+            var smallestDiff = Long.MAX_VALUE
+
+            days.forEachIndexed { index, dayData ->
+                val dayDate = dayFormat.parse(dayData.date)?.time ?: return@forEachIndexed
+                val diff = dayDate - today
+
+                // Prioritize future dates (positive diff) over past dates
+                if (diff >= 0 && diff < smallestDiff) {
+                    smallestDiff = diff
+                    closestIndex = index
+                }
+            }
+
+            return closestIndex
+        } catch (e: Exception) {
+            Log.e("DateParsing", "Error finding today's index: ${e.message}")
+            return 0
+        }
+    }
+
+    val mealViewModel: MealViewModel = viewModel()
+    val daysData by mealViewModel.weeklyMenuData.observeAsState(emptyList())
+    var selectedDayIndex by remember { mutableStateOf(0) }
+
+    // Update selected day index when data loads
+    LaunchedEffect(daysData) {
+        if (daysData.isNotEmpty()) {
+            selectedDayIndex = findTodayIndex(daysData)
+        }
+    }
+
+    val context = LocalContext.current
+    val systemUiController = rememberSystemUiController()
+
+    // Set status bar and navigation bar colors based on theme
+    SideEffect {
+        systemUiController.setStatusBarColor(color = primaryOrange)
+        systemUiController.setNavigationBarColor(
+            color = if (isDarkTheme) Color(0xFF202020) else Color.White,
+            darkIcons = !isDarkTheme
+        )
+    }
+
+    var expandedMenu by remember { mutableStateOf(false) }
+    var selectedMess by remember { mutableStateOf("Block A Mess Menu") }
+
+    // Check system's dark theme setting on app start
+    LaunchedEffect(Unit) {
+        val uiMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        isDarkTheme = uiMode == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.3f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "🍽️",
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            "CU Eats",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = playfairFont
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = primaryOrange,
+                    titleContentColor = Color.White
+                ),
+                actions = {
+                    // Theme toggle with dropdown
+                    Box {
+                        IconButton(onClick = { expandedMenu = true }) {
+                            Icon(
+                                Icons.Default.Settings,
+                                contentDescription = "Theme Toggle",
+                                tint = Color.White
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = expandedMenu,
+                            onDismissRequest = { expandedMenu = false },
+                            modifier = Modifier
+                                .background(surfaceColor)
+                                .width(200.dp)
+                        ) {
+                            Text(
+                                text = "Theme Settings",
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                fontWeight = FontWeight.Bold,
+                                color = textColor
+                            )
+                            Divider(color = dividerColor)
+                            DropdownMenuItem(
+                                text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            Icons.Default.Clear,
+                                            contentDescription = "Light Theme",
+                                            tint = if (!isDarkTheme) primaryOrange else textSecondaryColor
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            "Light Theme",
+                                            color = if (!isDarkTheme) primaryOrange else textColor
+                                        )
+                                    }
+                                },
+                                onClick = {
+                                    isDarkTheme = false
+                                    expandedMenu = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            Icons.Default.Check,
+                                            contentDescription = "Dark Theme",
+                                            tint = if (isDarkTheme) primaryOrange else textSecondaryColor
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            "Dark Theme",
+                                            color = if (isDarkTheme) primaryOrange else textColor
+                                        )
+                                    }
+                                },
+                                onClick = {
+                                    isDarkTheme = true
+                                    expandedMenu = false
+                                }
+                            )
+                            Divider(color = dividerColor)
+                            DropdownMenuItem(
+                                text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            Icons.Default.Settings,
+                                            contentDescription = "System Default",
+                                            tint = textSecondaryColor
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            "System Default",
+                                            color = textColor
+                                        )
+                                    }
+                                },
+                                onClick = {
+                                    val uiMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                                    isDarkTheme = uiMode == Configuration.UI_MODE_NIGHT_YES
+                                    expandedMenu = false
+                                }
+                            )
+                        }
+                    }
+
+                }
+            )
+        },
+        bottomBar = {
+            NavigationBar(
+                containerColor = if (isDarkTheme) Color(0xFF202020) else Color.White
+            ) {
+                NavigationBarItem(
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Hostel Mess") },
+                    label = { Text("Hostel Mess", fontSize = 12.sp) },
+                    selected = true,
+                    onClick = { },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = primaryOrange,
+                        selectedTextColor = primaryOrange,
+                        unselectedIconColor = textSecondaryColor,
+                        unselectedTextColor = textSecondaryColor,
+                        indicatorColor = if (isDarkTheme) Color(0xFF303030) else Color(0xFFFFECE0)
+                    )
+                )
+                NavigationBarItem(
+                    icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Campus Shops") },
+                    label = { Text("Campus Shops", fontSize = 12.sp) },
+                    selected = false,
+                    onClick = { navController.navigate("shops") },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = primaryOrange,
+                        selectedTextColor = primaryOrange,
+                        unselectedIconColor = textSecondaryColor,
+                        unselectedTextColor = textSecondaryColor,
+                        indicatorColor = if (isDarkTheme) Color(0xFF303030) else Color(0xFFFFECE0)
+                    )
+                )
+                NavigationBarItem(
+                    icon = { Icon(Icons.Default.Email, contentDescription = "Budget") },
+                    label = { Text("Budget", fontSize = 12.sp) },
+                    selected = false,
+                    onClick = { navController.navigate("budget") },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = primaryOrange,
+                        selectedTextColor = primaryOrange,
+                        unselectedIconColor = textSecondaryColor,
+                        unselectedTextColor = textSecondaryColor,
+                        indicatorColor = if (isDarkTheme) Color(0xFF303030) else Color(0xFFFFECE0)
+                    )
+                )
+            }
+        }
+    ) { paddingValues ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            color = if (isDarkTheme) darkBackground else lightBackground
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Location indicator
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = surfaceColor),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                ) {
+
+                }
+
+                if (daysData.isNotEmpty()) {
+                    // Calendar Day Selector
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 8.dp),
+                        colors = CardDefaults.cardColors(containerColor = surfaceColor),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(onClick = { /* Navigate to previous week */ }) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowLeft,
+                                    contentDescription = "Previous",
+                                    tint = textSecondaryColor
+                                )
+                            }
+
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                itemsIndexed(daysData) { index, dayData ->
+                                    // Format day and extract day number + month
+                                    val dayName = dayData.day.take(3)
+
+                                    val (dayDate, monthAbbrev) = try {
+                                        val inputFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                        val date = inputFormatter.parse(dayData.date)
+
+                                        val day = SimpleDateFormat("dd", Locale.getDefault()).format(date)
+                                        val month = SimpleDateFormat("MMM", Locale.getDefault()).format(date) // Ex: Jan, Feb
+
+                                        day to month
+                                    } catch (e: Exception) {
+                                        "??" to "???"
+                                    }
+
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier
+                                            .width(48.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(
+                                                if (index == selectedDayIndex) primaryOrange else Color.Transparent
+                                            )
+                                            .clickable { selectedDayIndex = index }
+                                            .padding(vertical = 8.dp)
+                                    ) {
+                                        Text(
+                                            text = dayName,
+                                            fontSize = 12.sp,
+                                            color = if (index == selectedDayIndex) Color.White else textSecondaryColor,
+                                            fontFamily = playfairFont
+                                        )
+                                        Text(
+                                            text = dayDate,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (index == selectedDayIndex) Color.White else textColor,
+                                            fontFamily = poppinsFont
+                                        )
+                                        Text(
+                                            text = monthAbbrev,
+                                            fontSize = 10.sp,
+                                            color = if (index == selectedDayIndex) Color.White else textSecondaryColor,
+                                            fontFamily = playfairFont
+                                        )
+                                    }
+                                }
+                            }
+
+
+                            IconButton(onClick = { /* Navigate to next week */ }) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowRight,
+                                    contentDescription = "Next",
+                                    tint = textSecondaryColor
+                                )
+                            }
+                        }
+                    }
+
+                    // Meal Content
+                    val selectedDay = daysData[selectedDayIndex]
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // Group meals by type (breakfast, lunch, dinner)
+                        val groupedMeals = selectedDay.meals.groupBy { it.type }
+
+                        groupedMeals.forEach { (mealType, meals) ->
+                            item {
+                                MealTypeCard(
+                                    mealType = mealType,
+                                    meals = meals,
+                                    navController = navController,
+                                    isDarkTheme = isDarkTheme,
+                                    surfaceColor = surfaceColor,
+                                    textColor = textColor,
+                                    textSecondaryColor = textSecondaryColor,
+                                    dividerColor = dividerColor
+                                )
+                            }
+                        }
+
+                        // Add some space at the bottom
+                        item {
+                            Spacer(modifier = Modifier.height(5.dp))
+                        }
+                    }
+                } else {
+                    // Loading placeholders
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        repeat(3) { // Show 3 shimmer placeholders for meal cards
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(120.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .placeholder(
+                                        visible = true,
+                                        highlight = PlaceholderHighlight.shimmer(),
+                                        color = if (isDarkTheme) Color(0xFF303030) else Color.LightGray
+                                    ),
+                                colors = CardDefaults.cardColors(containerColor = surfaceColor)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(80.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .background(if (isDarkTheme) Color.DarkGray else Color.Gray)
+                                            .placeholder(
+                                                visible = true,
+                                                highlight = PlaceholderHighlight.shimmer(),
+                                                color = if (isDarkTheme) Color(0xFF303030) else Color.LightGray
+                                            )
+                                    )
+
+                                    Spacer(modifier = Modifier.width(16.dp))
+
+                                    Column(
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.7f)
+                                                .height(16.dp)
+                                                .clip(RoundedCornerShape(4.dp))
+                                                .background(if (isDarkTheme) Color.DarkGray else Color.Gray)
+                                                .placeholder(
+                                                    visible = true,
+                                                    highlight = PlaceholderHighlight.shimmer(),
+                                                    color = if (isDarkTheme) Color(0xFF303030) else Color.LightGray
+                                                )
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.5f)
+                                                .height(14.dp)
+                                                .clip(RoundedCornerShape(4.dp))
+                                                .background(if (isDarkTheme) Color.DarkGray else Color.Gray)
+                                                .placeholder(
+                                                    visible = true,
+                                                    highlight = PlaceholderHighlight.shimmer(),
+                                                    color = if (isDarkTheme) Color(0xFF303030) else Color.LightGray
+                                                )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Text(
+                            text = "Fetching the latest meal plan... 🍽️",
+                            color = textColor,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = poppinsFont,
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .align(Alignment.CenterHorizontally)
+                                .placeholder(
+                                    visible = true,
+                                    highlight = PlaceholderHighlight.shimmer(),
+                                    color = if (isDarkTheme) Color(0xFF303030) else Color.LightGray
+                                )
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun MealTypeCard(
+    mealType: String,
+    meals: List<Meal>,
+    navController: NavController,
+    isDarkTheme: Boolean,
+    surfaceColor: Color,
+    textColor: Color,
+    textSecondaryColor: Color,
+    dividerColor: Color
+) {
+    val primaryOrange = Color(0xFFFF6B01)
+
+    // Enhanced meal icons with more visually appealing emojis
+    val mealIcon = when (mealType.lowercase()) {
+        "breakfast" -> "🍳"
+        "lunch" -> "🍛"
+        "snacks" -> "🧁"
+        "dinner" -> "🍽️"
+        else -> "🍴"
+    }
+
+    // Time ranges for each meal type
+    val timeRange = when (mealType.lowercase()) {
+        "breakfast" -> "7:30 AM - 9:30 AM"
+        "lunch" -> "12:30 PM - 2:30 PM"
+        "snacks" -> "4:30 PM - 6:00 PM"
+        "dinner" -> "7:30 PM - 9:30 PM"
+        else -> ""
+    }
+
+    // Background colors for meal type icons - adapted for dark theme
+    val iconBackground = when (mealType.lowercase()) {
+        "breakfast" -> if (isDarkTheme) Color(0xFF3D3500) else Color(0xFFFFF8E1) // Yellow
+        "lunch" -> if (isDarkTheme) Color(0xFF002B45) else Color(0xFFE3F2FD) // Blue
+        "snacks" -> if (isDarkTheme) Color(0xFF4A0072) else Color(0xFFE1BEE7)
+        "dinner" -> if (isDarkTheme) Color(0xFF003010) else Color(0xFFE8F5E9) // Green
+        else -> if (isDarkTheme) Color(0xFF3D1E00) else Color(0xFFFFF2ED) // Orange
+    }
+
+    // Header background colors for each meal type - adapted for dark theme
+    val headerBackground = when (mealType.lowercase()) {
+        "breakfast" -> if (isDarkTheme) Color(0xFF2C2700) else Color(0xFFFFFDE7) // Yellow
+        "lunch" -> if (isDarkTheme) Color(0xFF002037) else Color(0xFFE8F5FF) // Blue
+        "snacks" -> if (isDarkTheme) Color(0xFF6A1B9A) else Color(0xFFF3E5F5) // Purple
+        "dinner" -> if (isDarkTheme) Color(0xFF002207) else Color(0xFFF1F8F1) // Green
+        else -> if (isDarkTheme) Color(0xFF2C1500) else Color(0xFFFFF5F0) // Orange
+    }
+
+    // Text color for each meal type - keep as is for better contrast
+    val mealTypeColor = when (mealType.lowercase()) {
+        "breakfast" -> Color(0xFFFF9800) // Orange
+        "lunch" -> Color(0xFF2196F3) // Blue
+        "snacks" -> Color(0xFFAB47BC) // Purple
+        "dinner" -> Color(0xFF4CAF50) // Green
+        else -> Color(0xFFFF6B01) // Default orange
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = surfaceColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            // Meal Type Header with colored background
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(headerBackground)
+                    .padding(16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(iconBackground),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = mealIcon,
+                            fontSize = 24.sp
+                        )
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = mealType.capitalize(),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = mealTypeColor,
+                            fontFamily = poppinsFont
+                        )
+                        Text(
+                            text = timeRange,
+                            fontSize = 14.sp,
+                            color = textSecondaryColor,
+                            fontFamily = playfairFont
+                        )
+                    }
+
+                }
+            }
+
+            Divider(
+                color = dividerColor,
+                thickness = 1.dp
+            )
+
+            // Menu Items with improved layout
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Convert meal items to a simpler format
+                val allItems = mutableListOf<String>()
+
+                meals.forEach { meal ->
+                    allItems.addAll(meal.items)
+                    allItems.addAll(meal.commonItems)
+
+                    meal.hostels.forEach { (_, hostelItems) ->
+                        allItems.addAll(hostelItems)
+                    }
+                }
+
+                // Display unique items sorted alphabetically
+                DishesGrid(
+                    dishes = allItems.distinct().sorted(),
+                    mealType = mealType,             // pass the corresponding meal type
+                    isDarkTheme = isDarkTheme,       // pass the theme flag
+                    modifier = Modifier              // optional modifier
+                )
+
+
+
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun DishesGrid(
+    dishes: List<String>,
+    mealType: String,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier
+) {
+    FlowRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        maxItemsInEachRow = 3
+    ) {
+        dishes.forEach { dish ->
+            DishBox(
+                dishName = dish,
+                isDarkTheme = isDarkTheme,
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Composable
+fun DishBox(
+    dishName: String,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val textColor = if (isDarkTheme) Color(0xFFE0E0E0) else Color(0xFF333333)
+    val borderColor = if (isDarkTheme) Color(0xFF505050) else Color(0xFFE0E0E0)
+
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(14.dp),
+        color = Color.Transparent,
+        border = BorderStroke(1.dp, borderColor)
+    ) {
+        Text(
+            text = dishName,
+            fontSize = 15.sp, // Slightly larger for clarity
+            fontWeight = FontWeight.SemiBold,
+            color = textColor,
+            lineHeight = 18.sp,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            style = TextStyle(
+                fontFamily = FontFamily.SansSerif
+            )
+        )
+    }
+}
+
+
+
+// Extension function to capitalize first letter of a string
+fun String.capitalize(): String {
+    return this.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+        else it.toString()
+    }
+}
+
+
+data class MealItem(
+    val name: String,
+    val calories: Int,
+    val protein: Int
+)
+
+@Composable
+fun MealItemRow(item: MealItem, isDarkTheme: Boolean = false) {
+    val textColor = if (isDarkTheme) Color.White else Color.Black
+    val textSecondaryColor = if (isDarkTheme) Color.LightGray else Color.Gray
+    val primaryOrange = Color(0xFFFF6B01)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .background(if (isDarkTheme) Color(0xFF1E3C1F) else Color(0xFFE6F7E9)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = null,
+                tint = Color(0xFF4CAF50),
+                modifier = Modifier.size(16.dp)
+            )
+        }
+
+        Text(
+            text = item.name,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = textColor,
+            fontFamily = playfairFont,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 12.dp)
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(end = 12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "Calories",
+                    tint = primaryOrange,
+                    modifier = Modifier.size(16.dp)
+                )
+                Text(
+                    text = "${item.calories} cal",
+                    fontSize = 12.sp,
+                    color = textSecondaryColor,
+                    fontFamily = playfairFont,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "Protein",
+                    tint = Color(0xFFFFB74D),
+                    modifier = Modifier.size(16.dp)
+                )
+                Text(
+                    text = "${item.protein}g protein",
+                    fontSize = 12.sp,
+                    color = textSecondaryColor,
+                    fontFamily = playfairFont,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+            }
+        }
+    }
+}
+
+
+// Keep the existing viewmodel, data classes, and utility functions
+open class MealViewModel : ViewModel() {
+    private val _weeklyMenuData = MutableLiveData<List<DayData>>()
+    val weeklyMenuData: LiveData<List<DayData>> get() = _weeklyMenuData
+
+    init {
+        fetchDailyMenu()
+    }
+
+    private fun fetchDailyMenu() {
+        val database = FirebaseDatabase.getInstance("https://cu-eats-37fa0-default-rtdb.firebaseio.com/")
+            .reference.child("meals")
+
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("FirebaseData", "Snapshot value: ${snapshot.value}")
+
+                if (snapshot.exists()) {
+                    val mealOrder = listOf("Breakfast", "Lunch", "Snacks", "Dinner")
+                    val dayOrder = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+                    // Extract all day entries regardless of week
+                    val allDays = mutableListOf<DayData>()
+
+                    snapshot.children.forEach { weekSnapshot ->
+                        Log.d("FirebaseData", "Processing Week: ${weekSnapshot.key}")
+
+                        // Process each day in this week
+                        dayOrder.forEach { dayName ->
+                            val daySnapshot = weekSnapshot.child(dayName)
+                            if (daySnapshot.exists()) {
+                                // Get the date from the day data or use default
+                                val dateStr = daySnapshot.child("date").getValue(String::class.java) ?: "No date"
+
+                                // Get meals for this day
+                                val meals = daySnapshot.children.mapNotNull { mealSnapshot ->
+                                    // Skip the date field when processing meals
+                                    if (mealSnapshot.key == "date") return@mapNotNull null
+                                    mealSnapshot.getValue(Meal::class.java)
+                                }.sortedBy { mealOrder.indexOf(it.type) }
+
+                                // Only add days that have meal data
+                                if (meals.isNotEmpty()) {
+                                    allDays.add(DayData(
+                                        day = dayName,
+                                        date = dateStr,
+                                        meals = meals
+                                    ))
+                                }
+                            }
+                        }
+                    }
+
+                    // Sort days chronologically
+                    val sortedDays = allDays.sortedBy { dayData ->
+                        // Try to parse date for sorting
+                        try {
+                            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                            formatter.parse(dayData.date)?.time ?: Long.MAX_VALUE
+                        } catch (e: Exception) {
+                            // If date parsing fails, use a default ordering
+                            Log.e("DateParsing", "Error parsing date: ${e.message}")
+                            Long.MAX_VALUE
+                        }
+                    }
+
+                    _weeklyMenuData.value = sortedDays
+                    Log.d("FirebaseData", "Processed ${sortedDays.size} days")
+                } else {
+                    Log.d("FirebaseData", "No data found in snapshot")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Error: ${error.message}")
+            }
+        })
+    }
+}
+
+// Keep existing data classes
+data class DayData(
+    val day: String,
+    val date: String,
+    val meals: List<Meal>
+)
+
+data class Meal(
+    val type: String = "",
+    val timing: String = "",
+    val items: List<String> = listOf(),
+    val hostels: Map<String, List<String>> = mapOf(),
+    val commonItems: List<String> = listOf()
+)
+
+data class WeekDay(
+    val day: String = "",
+    val date: String = "",
+    val meals: List<Meal> = listOf()
+)
+
+data class WeekData(
+    val weekNumber: Int = 0,
+    val days: List<WeekDay> = listOf()
+)
+
+// Keep existing font definitions
+val montserratFont = FontFamily(
+    androidx.compose.ui.text.font.Font(R.font.merriweatherregular)
+)
+val poppinsFont = FontFamily(
+    androidx.compose.ui.text.font.Font(R.font.merriweatherbold)
+)
+val playfairFont = FontFamily(
+    androidx.compose.ui.text.font.Font(R.font.merriweatherregular)
+)
+
+// Helper function to format dates (keeping existing function)
+private fun formatDateForDisplay(dateStr: String): String {
+    return try {
+        // Assuming input format is dd/MM/yyyy
+        val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+        val date = inputFormat.parse(dateStr)
+        date?.let { outputFormat.format(it) } ?: dateStr
+    } catch (e: Exception) {
+        // If formatting fails, return the original string
+        dateStr
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MealDetailsScreen(mealId: String?, navController: NavController) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        mealId ?: "Meal Details",
+                        fontFamily = montserratFont
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /* Handle back navigation */ }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Details for $mealId",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = poppinsFont
+                )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Here you can display more information about the selected meal.",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = playfairFont
+                )
+            )
+        }
+    }
+}
+
+
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewModernWeeklyMenuApp() {
+    // Mock NavController for preview
+    val navController = rememberNavController()
+
+    // Use a custom theme if needed (optional)
+    MaterialTheme {
+        ModernWeeklyMenuApp(navController)
+    }
+}
+bottomBar = {
+                NavigationBar(
+                    containerColor = Color(0xFF2D1F67),
+                    contentColor = Color.White,
+                    tonalElevation = 0.dp
+                ) {
+                    NavigationBarItem(
+                        selected = true, // Assuming this is the Home screen
+                        onClick = {
+                            // Navigate to home
+                            navController.navigate("home") {
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                Icons.Default.Home,
+                                contentDescription = "Home",
+                                tint = Color(0xFFFFD700)
+                            )
+                        },
+                        label = { Text("Home", color = Color.White) }
+                    )
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = {
+                            try {
+                                navController.navigate("shops") {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            } catch (e: Exception) {
+                                Log.e("Navigation", "Detailed navigation error: ${e.message}")
+                                Toast.makeText(context, "Navigation error: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        icon = {
+                            Icon(
+                                Icons.Default.ShoppingCart,
+                                contentDescription = "Menu",
+                                tint = Color(0xFFFFD700)
+                            )
+                        },
+                        label = { Text("Menu", color = Color.White) }
+                    )
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = { navController.navigate("budget") },
+                        icon = {
+                            Icon(
+                                Icons.Default.Email,
+                                contentDescription = "Budget",
+                                tint = Color(0xFFFFD700)
+                            )
+                        },
+                        label = { Text("Budget", color = Color.White) }
+                    )
+                }
+            }

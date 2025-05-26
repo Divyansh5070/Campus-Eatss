@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "Paneer Butter Masala",
+    "restaurant": "Tandoori Junction",
+    "price": 250.0,
+    "isVegetarian": true,
+    "rating": 4.6,
+    "location": "Boys Hostel",
+    "description": "A rich and creamy tomato-based paneer curry with aromatic spices."
+  },
+  {
+    "id": 2,
+    "name": "Masala Dosa",
+    "restaurant": "South Spice",
+    "price": 180.0,
+    "isVegetarian": true,
+    "rating": 4.7,
+    "location": "Campus",
+    "description": "A crispy rice pancake filled with spicy potato masala, served with chutney and sambar."
+  },
+  {
+    "id": 3,
+    "name": "Hyderabadi Biryani",
+    "restaurant": "Biryani House",
+    "price": 320.0,
+    "isVegetarian": false,
+    "rating": 4.8,
+    "location": "Girls Hostel",
+    "description": "A flavorful and aromatic rice dish cooked with tender marinated meat and fragrant spices."
+  },
+  {
+    "id": 4,
+    "name": "Rajma Chawal",
+    "restaurant": "Punjabi Dhaba",
+    "price": 150.0,
+    "isVegetarian": true,
+    "rating": 4.5,
+    "location": "Boys Hostel",
+    "description": "A comforting dish of red kidney beans cooked in a spiced tomato gravy, served with rice."
+  },
+  {
+    "id": 5,
+    "name": "Chole Bhature",
+    "restaurant": "Delhi Bites",
+    "price": 200.0,
+    "isVegetarian": true,
+    "rating": 4.6,
+    "location": "Campus",
+    "description": "A delicious North Indian dish of spicy chickpea curry served with fried bread."
+  },
+  {
+    "id": 6,
+    "name": "Pani Puri",
+    "restaurant": "Street Delight",
+    "price": 50.0,
+    "isVegetarian": true,
+    "rating": 4.9,
+    "location": "Girls Hostel",
+    "description": "Crispy hollow puris filled with tangy and spicy flavored water."
+  },
+  {
+    "id": 7,
+    "name": "Mutton Rogan Josh",
+    "restaurant": "Kashmiri Aroma",
+    "price": 350.0,
+    "isVegetarian": false,
+    "rating": 4.7,
+    "location": "Campus",
+    "description": "A slow-cooked Kashmiri mutton curry with rich spices and a deep red color."
+  },
+  {
+    "id": 8,
+    "name": "Dhokla",
+    "restaurant": "Gujju Snacks",
+    "price": 120.0,
+    "isVegetarian": true,
+    "rating": 4.4,
+    "location": "Boys Hostel",
+    "description": "A soft and fluffy steamed gram flour cake, garnished with mustard seeds and coriander."
+  },
+  {
+    "id": 9,
+    "name": "Misal Pav",
+    "restaurant": "Maharashtra Tadka",
+    "price": 130.0,
+    "isVegetarian": true,
+    "rating": 4.3,
+    "location": "Girls Hostel",
+    "description": "A spicy Maharashtrian dish made of sprouted lentils, served with pav bread."
+  },
+  {
+    "id": 10,
+    "name": "Rasgulla",
+    "restaurant": "Bengali Sweets",
+    "price": 80.0,
+    "isVegetarian": true,
+    "rating": 4.8,
+    "location": "Campus",
+    "description": "Soft and spongy white cheese balls soaked in light sugar syrup."
+  }
+]
