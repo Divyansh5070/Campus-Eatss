@@ -249,7 +249,7 @@ class ShopViewModel : ViewModel() {
         return _shops.value?.find { it.id == shopId }
     }
     // https://res.cloudinary.com/dv5f6ctbx/image/upload/w_1000,h_1000,f_webp,q_auto:good/
-    private fun getShops(): List<Shop> {
+    fun getShops(): List<Shop> {
         return listOf(
             Shop(
                 id = "2",

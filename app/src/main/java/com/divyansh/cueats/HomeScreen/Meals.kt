@@ -222,106 +222,106 @@ fun ModernWeeklyMenuApp(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.3f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "🍽️",
-                                fontSize = 16.sp,
-                                color = Color.White
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            "Campus Eats",
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = playfairFont
-                        )
-                    }
-                },
-                actions = {
-                    // UPDATED: Notification icon with badge
-                    NotificationIconWithBadge(
-                        unreadCount = unreadNotificationCount,
-                        onClick = {
-                            try {
-                                val currentRoute = navController.currentBackStackEntry?.destination?.route
-                                if (currentRoute != "NotificationRoute") {
-                                    navController.navigate(NotificationRoute) {
-                                        launchSingleTop = true
-                                    }
-                                }
-                            } catch (e: Exception) {
-                                Log.e("Navigation", "Error navigating to notification: ${e.message}")
-                            }
-                        }
-                    )
-
-                    // About icon
-                    IconButton(
-                        onClick = {
-                            try {
-                                navController.navigate(AboutRoute) {
-                                    launchSingleTop = true
-                                }
-                            } catch (e: Exception) {
-                                Log.e("Navigation", "Error navigating to about: ${e.message}")
-                            }
-                        }
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = "About",
-                                tint = Color.White,
-                                modifier = Modifier.size(22.dp)
-                            )
-                        }
-                    }
-
-                    // Logout icon
-                    if (authViewModel != null) {
-                        IconButton(
-                            onClick = { showLogoutDialog = true }
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .clip(CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ExitToApp,
-                                    contentDescription = "Sign Out",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(22.dp)
-                                )
-                            }
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = primaryOrange,
-                    titleContentColor = Color.White
-                )
-            )
-        },
+//        topBar = {
+//            TopAppBar(
+//                title = {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Box(
+//                            modifier = Modifier
+//                                .size(32.dp)
+//                                .clip(CircleShape)
+//                                .background(Color.White.copy(alpha = 0.3f)),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Text(
+//                                text = "🍽️",
+//                                fontSize = 16.sp,
+//                                color = Color.White
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.width(12.dp))
+//                        Text(
+//                            "Campus Eats",
+//                            fontSize = 22.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            fontFamily = playfairFont
+//                        )
+//                    }
+//                },
+//                actions = {
+//                    // UPDATED: Notification icon with badge
+//                    NotificationIconWithBadge(
+//                        unreadCount = unreadNotificationCount,
+//                        onClick = {
+//                            try {
+//                                val currentRoute = navController.currentBackStackEntry?.destination?.route
+//                                if (currentRoute != "NotificationRoute") {
+//                                    navController.navigate(NotificationRoute) {
+//                                        launchSingleTop = true
+//                                    }
+//                                }
+//                            } catch (e: Exception) {
+//                                Log.e("Navigation", "Error navigating to notification: ${e.message}")
+//                            }
+//                        }
+//                    )
+//
+//                    // About icon
+//                    IconButton(
+//                        onClick = {
+//                            try {
+//                                navController.navigate(AboutRoute) {
+//                                    launchSingleTop = true
+//                                }
+//                            } catch (e: Exception) {
+//                                Log.e("Navigation", "Error navigating to about: ${e.message}")
+//                            }
+//                        }
+//                    ) {
+//                        Box(
+//                            modifier = Modifier
+//                                .size(50.dp)
+//                                .clip(CircleShape),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Icon(
+//                                imageVector = Icons.Default.Info,
+//                                contentDescription = "About",
+//                                tint = Color.White,
+//                                modifier = Modifier.size(22.dp)
+//                            )
+//                        }
+//                    }
+//
+//                    // Logout icon
+//                    if (authViewModel != null) {
+//                        IconButton(
+//                            onClick = { showLogoutDialog = true }
+//                        ) {
+//                            Box(
+//                                modifier = Modifier
+//                                    .size(50.dp)
+//                                    .clip(CircleShape),
+//                                contentAlignment = Alignment.Center
+//                            ) {
+//                                Icon(
+//                                    imageVector = Icons.Default.ExitToApp,
+//                                    contentDescription = "Sign Out",
+//                                    tint = Color.White,
+//                                    modifier = Modifier.size(22.dp)
+//                                )
+//                            }
+//                        }
+//                    }
+//                },
+//                colors = TopAppBarDefaults.topAppBarColors(
+//                    containerColor = primaryOrange,
+//                    titleContentColor = Color.White
+//                )
+//            )
+//        },
         bottomBar = {
             AppBottomNavigation(
                 navController = navController,

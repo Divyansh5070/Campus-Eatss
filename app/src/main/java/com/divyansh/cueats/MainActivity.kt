@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.work.*
+import com.divyansh.cueats.HomeScreen.HomeScreen
 import com.divyansh.cueats.HomeScreen.MealDetailsScreen
 import com.divyansh.cueats.HomeScreen.ModernWeeklyMenuApp
 import com.divyansh.cueats.ShopsScreen.ShopMenuDetailScreen
@@ -74,6 +75,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.divyansh.cueats.Maps.EnhancedCampusMap
+import com.divyansh.cueats.ProfileScreen.ProfileScreen
 import kotlinx.coroutines.delay
 import androidx.lifecycle.ViewModelProvider
 import com.divyansh.cueats.ShopsScreen.RatingViewModel
@@ -233,7 +235,7 @@ fun MealPlannerAppWithAuth() {
         if (currentDestination != "SplashRoute" && currentDestination != null) {
             if (authState.isLoggedIn && authState.user != null) {
                 if (currentDestination == "LoginRoute") {
-                    navController.navigate(MealsRoute) {
+                    navController.navigate(HomeRoute) {
                         popUpTo<LoginRoute> { inclusive = true }
                         launchSingleTop = true
                     }
@@ -271,7 +273,7 @@ fun MealPlannerAppWithAuth() {
                 LoginScreen(
                     onNavigateToHome = {
                         if (authState.isLoggedIn && authState.user != null) {
-                            navController.navigate(MealsRoute) {
+                            navController.navigate(HomeRoute) {
                                 popUpTo<LoginRoute> { inclusive = true }
                                 launchSingleTop = true
                             }
@@ -279,6 +281,14 @@ fun MealPlannerAppWithAuth() {
                     },
                     viewModel = authViewModel
                 )
+            }
+
+            composable<HomeRoute> {
+                if (authState.isLoggedIn && authState.user != null) {
+                    HomeScreen(navController, authViewModel)
+                } else {
+                    LoadingScreen()
+                }
             }
 
             composable<MealsRoute> {
@@ -323,6 +333,15 @@ fun MealPlannerAppWithAuth() {
                     shopId = shopMenuRoute.shopId
                 )
             }
+
+            composable<ProfileRoute> {
+                if (authState.isLoggedIn && authState.user != null) {
+                    ProfileScreen(navController, authViewModel)
+                } else {
+                    LoadingScreen()
+                }
+            }
+
         }
     }
 }
@@ -502,21 +521,24 @@ fun AppBottomNavigation(navController: NavController, currentRoute: String?) {
     // Determine current tab based on route
     val currentTab = remember(currentRoute) {
         when {
+            currentRoute?.contains("HomeRoute") == true ||
+                    currentRoute == "home" -> BottomNavTab.HOME
             currentRoute?.contains("MealsRoute") == true ||
                     currentRoute?.contains("MealDetailsRoute") == true ||
                     currentRoute == "meals" -> BottomNavTab.MEALS
             currentRoute?.contains("ShopsRoute") == true ||
                     currentRoute?.contains("ShopMenuRoute") == true ||
                     currentRoute == "shops" -> BottomNavTab.SHOPS
-            else -> BottomNavTab.MEALS
+            else -> BottomNavTab.HOME
         }
     }
 
     // Animated indicator offset
     val indicatorOffset by animateFloatAsState(
         targetValue = when (currentTab) {
-            BottomNavTab.MEALS -> 0.25f
-            BottomNavTab.SHOPS -> 0.75f
+            BottomNavTab.HOME -> 0.17f
+            BottomNavTab.MEALS -> 0.5f
+            BottomNavTab.SHOPS -> 0.83f
         },
         animationSpec = tween(
             durationMillis = 200,
@@ -527,8 +549,7 @@ fun AppBottomNavigation(navController: NavController, currentRoute: String?) {
 
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .navigationBarsPadding(),
+            .fillMaxWidth(),
         color = colors.surface,
         shadowElevation = 8.dp,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
@@ -562,10 +583,34 @@ fun AppBottomNavigation(navController: NavController, currentRoute: String?) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Home Tab
+                OptimizedNavItem(
+                    iconRes = R.drawable.home,
+                    label = "Home",
+                    isSelected = currentTab == BottomNavTab.HOME,
+                    colors = colors,
+                    onClick = {
+                        if (currentTab != BottomNavTab.HOME) {
+                            navController.navigate(HomeRoute) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    }
+                )
+
+                // Divider
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(30.dp)
+                        .background(colors.divider)
+                )
+
                 // Meals Tab
                 OptimizedNavItem(
                     iconRes = R.drawable.mess,
@@ -575,8 +620,8 @@ fun AppBottomNavigation(navController: NavController, currentRoute: String?) {
                     onClick = {
                         if (currentTab != BottomNavTab.MEALS) {
                             navController.navigate(MealsRoute) {
-                                popUpTo<ShopsRoute> { inclusive = true }
                                 launchSingleTop = true
+                                restoreState = true
                             }
                         }
                     }
@@ -600,7 +645,6 @@ fun AppBottomNavigation(navController: NavController, currentRoute: String?) {
                         if (currentTab != BottomNavTab.SHOPS) {
                             navController.navigate(ShopsRoute) {
                                 launchSingleTop = true
-                                // Don't pop up to avoid back stack issues
                                 restoreState = true
                             }
                         }
@@ -668,7 +712,7 @@ private fun OptimizedNavItem(
 
 // Data classes for better organization
 private enum class BottomNavTab {
-    MEALS, SHOPS
+    HOME, MEALS, SHOPS
 }
 
 private data class BottomNavColors(

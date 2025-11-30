@@ -9,6 +9,9 @@ object SplashRoute
 object LoginRoute
 
 @Serializable
+object HomeRoute
+
+@Serializable
 object MealsRoute
 
 @Serializable
@@ -28,3 +31,6 @@ data class ShopMenuRoute(val shopId: String)
 
 @Serializable
 object CampusMapRoute
+
+@Serializable
+object ProfileRoute

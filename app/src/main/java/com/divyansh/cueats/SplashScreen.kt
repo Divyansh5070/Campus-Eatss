@@ -112,7 +112,7 @@ fun SplashScreen(
 
                 // Navigate based on auth state
                 if (authState.isLoggedIn && authState.user != null) {
-                    nav.navigate(MealsRoute) {
+                    nav.navigate(HomeRoute) {
                         popUpTo<SplashRoute> { inclusive = true }
                         launchSingleTop = true
                     }
