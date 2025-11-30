@@ -43,8 +43,8 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.work.*
 import com.divyansh.cueats.HomeScreen.HomeScreen
-import com.divyansh.cueats.HomeScreen.MealDetailsScreen
-import com.divyansh.cueats.HomeScreen.ModernWeeklyMenuApp
+import com.divyansh.cueats.Mess.MealDetailsScreen
+import com.divyansh.cueats.Mess.ModernWeeklyMenuApp
 import com.divyansh.cueats.ShopsScreen.ShopMenuDetailScreen
 import com.divyansh.cueats.ShopsScreen.ShopMenuScreen
 import java.util.concurrent.TimeUnit

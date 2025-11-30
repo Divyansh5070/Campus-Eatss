@@ -1,4 +1,4 @@
-package com.divyansh.cueats.HomeScreen
+package com.divyansh.cueats.Mess
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -1583,14 +1583,14 @@ class MealViewModel(private val context: Context) : ViewModel() {
         try {
             val cachedMealDataJson = sharedPrefs.getString(CACHE_KEY_MEAL_DATA, null)
             if (cachedMealDataJson != null) {
-                val type = object : TypeToken<List<DayData>>() {}.type
+                val type = object : com.google.common.reflect.TypeToken<List<DayData>>() {}.type
                 val cachedMealData: List<DayData> = gson.fromJson(cachedMealDataJson, type)
                 _weeklyMenuData.value = cachedMealData
             }
 
             val cachedTimingsJson = sharedPrefs.getString(CACHE_KEY_MEAL_TIMINGS, null)
             if (cachedTimingsJson != null) {
-                val type = object : TypeToken<Map<String, String>>() {}.type
+                val type = object : com.google.common.reflect.TypeToken<Map<String, String>>() {}.type
                 val cachedTimings: Map<String, String> = gson.fromJson(cachedTimingsJson, type)
                 _mealTimings.value = cachedTimings
             }

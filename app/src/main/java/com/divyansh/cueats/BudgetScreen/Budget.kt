@@ -42,7 +42,7 @@ import coil.compose.AsyncImage
 
 import androidx.compose.ui.platform.LocalContext
 import com.divyansh.cueats.AppBottomNavigation
-import com.divyansh.cueats.HomeScreen.playfairFont
+import com.divyansh.cueats.Mess.playfairFont
 import com.divyansh.cueats.R
 
 

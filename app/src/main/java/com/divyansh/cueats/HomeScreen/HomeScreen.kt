@@ -1015,3 +1015,81 @@ private fun getCardGradient(index: Int): Pair<Color, Color> {
         else -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
     }
 }
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .background(
+                        color = primaryOrange.copy(alpha = 0.2f),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "#$rank",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = primaryOrange
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = textColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "⭐", fontSize = 12.sp)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = String.format("%.1f", shop.rating),
+                    fontSize = 12.sp,
+                    color = textSecondaryColor
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = shop.cuisine,
+                fontSize = 11.sp,
+                color = textSecondaryColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+// Helper functions
+private fun getMealColors(mealType: String): Pair<Color, Color> {
+    return when (mealType) {
+        "breakfast" -> Pair(Color(0xFFFFB84D), Color(0xFFFF8C42))
+        "lunch" -> Pair(Color(0xFF4CAF50), Color(0xFF8BC34A))
+        "snacks" -> Pair(Color(0xFFFF6B6B), Color(0xFFFF8E53))
+        "dinner" -> Pair(Color(0xFF5C6BC0), Color(0xFF7E57C2))
+        else -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
+    }
+}
+
+private fun getMealEmoji(mealType: String): String {
+    return when (mealType) {
+        "breakfast" -> "🌅"
+        "lunch" -> "🍛"
+        "snacks" -> "☕"
+        "dinner" -> "🌙"
+        else -> "🍽️"
+    }
+}
+
+private fun getCardGradient(index: Int): Pair<Color, Color> {
+    return when (index) {
+        0 -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
+        1 -> Pair(Color(0xFF4CAF50), Color(0xFF8BC34A))
+        2 -> Pair(Color(0xFF5C6BC0), Color(0xFF7E57C2))
+        3 -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
+        else -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
+    }
+}

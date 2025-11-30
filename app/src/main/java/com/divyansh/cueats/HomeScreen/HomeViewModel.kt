@@ -25,8 +25,6 @@ data class HomeScreenState(
     val currentMeal: MealInfo? = null,
     val nextMeal: MealInfo? = null,
     val mealCountdown: String = "",
-    val topShop: ShopClickData? = null,
-    val featuredShops: List<ShopClickData> = emptyList(),
     val announcements: List<Announcement> = emptyList(),
     val isLoading: Boolean = true,
     val error: String? = null
@@ -36,7 +34,6 @@ class HomeViewModel : ViewModel() {
     private val _state = MutableStateFlow(HomeScreenState())
     val state: StateFlow<HomeScreenState> = _state
 
-    private val shopClickTracker = ShopClickTracker()
     private val announcementRepository = AnnouncementRepository()
 
     companion object {
@@ -77,17 +74,10 @@ class HomeViewModel : ViewModel() {
                 // Load announcements
                 val announcements = announcementRepository.getActiveAnnouncements(5)
 
-                // Load shop rankings
-                val topShops = shopClickTracker.getTodayTopShops(5)
-                val topShop = topShops.firstOrNull()
-                val featuredShops = topShops.drop(1).take(4)
-
                 // Update meal info
                 updateMealInfo()
 
                 _state.value = _state.value.copy(
-                    topShop = topShop,
-                    featuredShops = featuredShops,
                     announcements = announcements,
                     isLoading = false
                 )
@@ -289,33 +279,5 @@ class HomeViewModel : ViewModel() {
         _state.value = _state.value.copy(mealCountdown = countdownText)
     }
 
-    /**
-     * Refresh shop rankings
-     */
-    fun refreshRankings() {
-        viewModelScope.launch {
-            try {
-                shopClickTracker.forceRefreshRankings()
-                val topShops = shopClickTracker.getTodayTopShops(5)
-                val topShop = topShops.firstOrNull()
-                val featuredShops = topShops.drop(1).take(4)
 
-                _state.value = _state.value.copy(
-                    topShop = topShop,
-                    featuredShops = featuredShops
-                )
-
-                Log.d(TAG, "Rankings refreshed")
-            } catch (e: Exception) {
-                Log.e(TAG, "Error refreshing rankings", e)
-            }
-        }
-    }
-
-    /**
-     * Track shop click
-     */
-    suspend fun trackShopClick(shopId: String, shopName: String, imageUrl: String = "", rating: Float = 0f) {
-        shopClickTracker.trackShopClick(shopId, shopName, imageUrl, rating)
-    }
 }
