@@ -41,6 +41,7 @@ import com.divyansh.cueats.MealsRoute
 import com.divyansh.cueats.R
 import com.divyansh.cueats.ShopsRoute
 import com.divyansh.cueats.AppBottomNavigation
+import com.divyansh.cueats.Mess.playfairFont
 import com.divyansh.cueats.NotificationRoute
 import com.divyansh.cueats.ProfileRoute
 import com.divyansh.cueats.Notification.NotificationIconWithBadge
@@ -202,33 +203,7 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Today's Special Section
-                state.topShop?.let { topShop ->
-                    TodaysSpecialSection(
-                        shop = topShop,
-                        navController = navController,
-                        primaryOrange = primaryOrange,
-                        surfaceColor = surfaceColor,
-                        textColor = textColor,
-                        textSecondaryColor = textSecondaryColor
-                    )
 
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-
-                // Featured Shops Section
-                if (state.featuredShops.isNotEmpty()) {
-                    FeaturedShopsSection(
-                        shops = state.featuredShops,
-                        navController = navController,
-                        primaryOrange = primaryOrange,
-                        surfaceColor = surfaceColor,
-                        textColor = textColor,
-                        textSecondaryColor = textSecondaryColor
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
             }
         }
     }
@@ -538,28 +513,52 @@ fun NavigationCardsSection(
             color = textColor
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // 2x2 Grid of square cards
+        // Card data with descriptions
         val cards = listOf(
-            Triple("Today's Mess", R.drawable.mess, false),
-            Triple("Campus Shops", R.drawable.shopsicon, false),
-            Triple("Maps", R.drawable.delivery, false),
-            Triple("Announcements", 0, true)
+            QuickAccessCard(
+                title = "Today's Mess",
+                description = "Check what's cooking",
+                iconRes = R.drawable.mess,
+                useMatIcon = false,
+                emoji = "🍽️"
+            ),
+            QuickAccessCard(
+                title = "Campus Shops",
+                description = "Explore nearby options",
+                iconRes = R.drawable.shopsicon,
+                useMatIcon = false,
+                emoji = "🏪"
+            ),
+            QuickAccessCard(
+                title = "Maps",
+                description = "Navigate campus",
+                iconRes = R.drawable.delivery,
+                useMatIcon = false,
+                emoji = "🗺️"
+            ),
+            QuickAccessCard(
+                title = "Announcements",
+                description = "Stay updated",
+                iconRes = 0,
+                useMatIcon = true,
+                emoji = "📢"
+            )
         )
 
         val routes = listOf(MealsRoute, ShopsRoute, CampusMapRoute, NotificationRoute)
 
         // Grid layout - 2 columns
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // First row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                cards.take(2).forEachIndexed { index, (title, iconRes, useMatIcon) ->
+                cards.take(2).forEachIndexed { index, card ->
                     var visible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
                         delay(100L * index)
@@ -568,20 +567,19 @@ fun NavigationCardsSection(
 
                     AnimatedVisibility(
                         visible = visible,
-                        enter = fadeIn(animationSpec = tween(400)) + scaleIn(
-                            animationSpec = tween(400),
-                            initialScale = 0.8f
+                        enter = fadeIn(animationSpec = tween(500)) + scaleIn(
+                            animationSpec = tween(500),
+                            initialScale = 0.85f
                         ),
                         modifier = Modifier.weight(1f)
                     ) {
-                        SquareNavigationCard(
-                            title = title,
-                            iconRes = iconRes,
-                            useMatIcon = useMatIcon,
+                        ImprovedNavigationCard(
+                            card = card,
                             gradient = getCardGradient(index),
                             onClick = { navController.navigate(routes[index]) },
                             surfaceColor = surfaceColor,
-                            textColor = textColor
+                            textColor = textColor,
+                            textSecondaryColor = textSecondaryColor
                         )
                     }
                 }
@@ -590,9 +588,9 @@ fun NavigationCardsSection(
             // Second row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                cards.drop(2).forEachIndexed { idx, (title, iconRes, useMatIcon) ->
+                cards.drop(2).forEachIndexed { idx, card ->
                     val index = idx + 2
                     var visible by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) {
@@ -602,20 +600,19 @@ fun NavigationCardsSection(
 
                     AnimatedVisibility(
                         visible = visible,
-                        enter = fadeIn(animationSpec = tween(400)) + scaleIn(
-                            animationSpec = tween(400),
-                            initialScale = 0.8f
+                        enter = fadeIn(animationSpec = tween(500)) + scaleIn(
+                            animationSpec = tween(500),
+                            initialScale = 0.85f
                         ),
                         modifier = Modifier.weight(1f)
                     ) {
-                        SquareNavigationCard(
-                            title = title,
-                            iconRes = iconRes,
-                            useMatIcon = useMatIcon,
+                        ImprovedNavigationCard(
+                            card = card,
                             gradient = getCardGradient(index),
                             onClick = { navController.navigate(routes[index]) },
                             surfaceColor = surfaceColor,
-                            textColor = textColor
+                            textColor = textColor,
+                            textSecondaryColor = textSecondaryColor
                         )
                     }
                 }
@@ -624,366 +621,160 @@ fun NavigationCardsSection(
     }
 }
 
+data class QuickAccessCard(
+    val title: String,
+    val description: String,
+    val iconRes: Int,
+    val useMatIcon: Boolean,
+    val emoji: String
+)
+
 @Composable
-fun SquareNavigationCard(
-    title: String,
-    iconRes: Int,
-    useMatIcon: Boolean = false,
+fun ImprovedNavigationCard(
+    card: QuickAccessCard,
     gradient: Pair<Color, Color>,
     onClick: () -> Unit,
     surfaceColor: Color,
-    textColor: Color
+    textColor: Color,
+    textSecondaryColor: Color
 ) {
+    // Hover/press animation
+    var isPressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "card_scale"
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(110.dp)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
+            .height(170.dp)
+            .clickable {
+                isPressed = true
+                onClick()
+            },
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = surfaceColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp, pressedElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp,
+            pressedElevation = 8.dp
+        )
     ) {
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            gradient.first.copy(alpha = 0.85f),
+                            gradient.second.copy(alpha = 0.95f)
+                        )
+                    )
+                )
         ) {
-            // Gradient background
+            // Decorative circles in background
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .size(120.dp)
+                    .offset(x = (-30).dp, y = (-30).dp)
                     .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                gradient.first.copy(alpha = 0.15f),
-                                gradient.second.copy(alpha = 0.25f)
-                            )
-                        )
+                        color = Color.White.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(60.dp)
+                    )
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .align(Alignment.BottomEnd)
+                    .offset(x = 20.dp, y = 20.dp)
+                    .background(
+                        color = Color.White.copy(alpha = 0.08f),
+                        shape = RoundedCornerShape(40.dp)
                     )
             )
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Icon
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(gradient.first, gradient.second)
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (useMatIcon) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = title,
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(id = iconRes),
-                            contentDescription = title,
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Title
-                Text(
-                    text = title,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = textColor,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun TodaysSpecialSection(
-    shop: ShopClickData,
-    navController: NavController,
-    primaryOrange: Color,
-    surfaceColor: Color,
-    textColor: Color,
-    textSecondaryColor: Color
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Today's Special",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = textColor
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "🔥", fontSize = 20.sp)
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Pulsing glow effect
-        val infiniteTransition = rememberInfiniteTransition(label = "glow")
-        val glowAlpha by infiniteTransition.animateFloat(
-            initialValue = 0.3f,
-            targetValue = 0.6f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1500),
-                repeatMode = RepeatMode.Reverse
-            ),
-            label = "glow_alpha"
-        )
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(140.dp)
-                .clickable { navController.navigate(ShopsRoute) },
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = surfaceColor),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                // Glow effect
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    primaryOrange.copy(alpha = glowAlpha),
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Shop image placeholder
+                // Icon section
+                Column {
+                    // Icon with background
                     Box(
                         modifier = Modifier
-                            .size(100.dp)
-                            .background(
-                                color = primaryOrange.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(12.dp)
-                            ),
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.White.copy(alpha = 0.25f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.shopsicon),
-                            contentDescription = shop.shopName,
-                            tint = primaryOrange,
-                            modifier = Modifier.size(48.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = shop.shopName,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        Spacer(modifier = Modifier.height(6.dp))
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = "⭐", fontSize = 16.sp)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = if (shop.rating > 0) String.format("%.1f", shop.rating) else "New",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = textColor
+                        if (card.useMatIcon) {
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
+                                contentDescription = card.title,
+                                tint = Color.White,
+                                modifier = Modifier.size(28.dp)
                             )
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = "👁️", fontSize = 14.sp)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "${shop.totalClicks} views today",
-                                fontSize = 13.sp,
-                                color = textSecondaryColor
+                        } else {
+                            Icon(
+                                painter = painterResource(id = card.iconRes),
+                                contentDescription = card.title,
+                                tint = Color.White,
+                                modifier = Modifier.size(28.dp)
                             )
                         }
                     }
+                }
+
+                // Text section
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = card.title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        lineHeight = 22.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = card.description,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White.copy(alpha = 0.9f),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        lineHeight = 18.sp
+                    )
                 }
             }
         }
     }
 }
 
-@Composable
-fun FeaturedShopsSection(
-    shops: List<ShopClickData>,
-    navController: NavController,
-    primaryOrange: Color,
-    surfaceColor: Color,
-    textColor: Color,
-    textSecondaryColor: Color
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-    ) {
-        Text(
-            text = "Featured Shops",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = textColor
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            itemsIndexed(shops) { index, shop ->
-                FeaturedShopCard(
-                    shop = shop,
-                    rank = index + 2,
-                    onClick = { navController.navigate(ShopsRoute) },
-                    primaryOrange = primaryOrange,
-                    surfaceColor = surfaceColor,
-                    textColor = textColor,
-                    textSecondaryColor = textSecondaryColor
-                )
-            }
-        }
+// Keep the existing getCardGradient function
+private fun getCardGradient(index: Int): Pair<Color, Color> {
+    return when (index) {
+        0 -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42)) // Orange gradient
+        1 -> Pair(Color(0xFF5C7CFA), Color(0xFF748FFC)) // Blue-Purple gradient
+        2 -> Pair(Color(0xFF7950F2), Color(0xFF9775FA)) // Purple gradient
+        3 -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42)) // Orange gradient
+        else -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
     }
 }
 
-@Composable
-fun FeaturedShopCard(
-    shop: ShopClickData,
-    rank: Int,
-    onClick: () -> Unit,
-    primaryOrange: Color,
-    surfaceColor: Color,
-    textColor: Color,
-    textSecondaryColor: Color
-) {
-    Card(
-        modifier = Modifier
-            .width(160.dp)
-            .height(180.dp)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = surfaceColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp)
-        ) {
-            // Ranking badge
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .background(
-                        color = primaryOrange.copy(alpha = 0.2f),
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "#$rank",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = primaryOrange
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Shop image placeholder
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(
-                        color = primaryOrange.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.shopsicon),
-                    contentDescription = shop.shopName,
-                    tint = primaryOrange,
-                    modifier = Modifier.size(36.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = shop.shopName,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = textColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "⭐", fontSize = 12.sp)
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = if (shop.rating > 0) String.format("%.1f", shop.rating) else "New",
-                    fontSize = 12.sp,
-                    color = textSecondaryColor
-                )
-            }
-        }
-    }
-}
 
 // Helper functions
 private fun getMealColors(mealType: String): Pair<Color, Color> {
@@ -1006,90 +797,3 @@ private fun getMealEmoji(mealType: String): String {
     }
 }
 
-private fun getCardGradient(index: Int): Pair<Color, Color> {
-    return when (index) {
-        0 -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
-        1 -> Pair(Color(0xFF4CAF50), Color(0xFF8BC34A))
-        2 -> Pair(Color(0xFF5C6BC0), Color(0xFF7E57C2))
-        3 -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
-        else -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
-    }
-}
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .background(
-                        color = primaryOrange.copy(alpha = 0.2f),
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "#$rank",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = primaryOrange
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = textColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "⭐", fontSize = 12.sp)
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = String.format("%.1f", shop.rating),
-                    fontSize = 12.sp,
-                    color = textSecondaryColor
-                )
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = shop.cuisine,
-                fontSize = 11.sp,
-                color = textSecondaryColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    }
-}
-
-// Helper functions
-private fun getMealColors(mealType: String): Pair<Color, Color> {
-    return when (mealType) {
-        "breakfast" -> Pair(Color(0xFFFFB84D), Color(0xFFFF8C42))
-        "lunch" -> Pair(Color(0xFF4CAF50), Color(0xFF8BC34A))
-        "snacks" -> Pair(Color(0xFFFF6B6B), Color(0xFFFF8E53))
-        "dinner" -> Pair(Color(0xFF5C6BC0), Color(0xFF7E57C2))
-        else -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
-    }
-}
-
-private fun getMealEmoji(mealType: String): String {
-    return when (mealType) {
-        "breakfast" -> "🌅"
-        "lunch" -> "🍛"
-        "snacks" -> "☕"
-        "dinner" -> "🌙"
-        else -> "🍽️"
-    }
-}
-
-private fun getCardGradient(index: Int): Pair<Color, Color> {
-    return when (index) {
-        0 -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
-        1 -> Pair(Color(0xFF4CAF50), Color(0xFF8BC34A))
-        2 -> Pair(Color(0xFF5C6BC0), Color(0xFF7E57C2))
-        3 -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
-        else -> Pair(Color(0xFFFF6B35), Color(0xFFFF8C42))
-    }
-}
