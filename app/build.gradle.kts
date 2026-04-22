@@ -29,6 +29,10 @@ android {
         versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Inject secrets into BuildConfig (never appear in committed source)
+        buildConfigField("String", "ONESIGNAL_APP_ID",
+            "\"${secrets.getProperty("ONESIGNAL_APP_ID", "")}\"")
     }
     
     // Enable 16 KB page size support for Android 15+ devices
@@ -66,6 +70,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

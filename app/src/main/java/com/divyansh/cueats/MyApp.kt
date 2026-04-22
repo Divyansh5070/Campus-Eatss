@@ -8,15 +8,14 @@ import kotlinx.coroutines.launch
 import com.onesignal.OneSignal
 import com.onesignal.debug.LogLevel
 
-// NOTE: Replace the below with your own ONESIGNAL_APP_ID
-val ONESIGNAL_APP_ID = "50fef6c1-9302-42b5-b15e-0bc1e260632e"
+// OneSignal App ID is loaded from BuildConfig (set via secrets.properties — never committed to git)
+// To run this project locally: add ONESIGNAL_APP_ID=your_id to secrets.properties
+// See secrets.properties.example for the template
+private val ONESIGNAL_APP_ID = BuildConfig.ONESIGNAL_APP_ID
 
 class MyApp : Application() {
     override fun onCreate() {
         super.onCreate()
-
-        // Verbose Logging set to help debug issues, remove before releasing your app.
-        OneSignal.Debug.logLevel = LogLevel.VERBOSE
 
         // OneSignal Initialization
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID)
