@@ -1,100 +1,115 @@
 <div align="center">
 
-<img src="app/src/main/ic_launcher-playstore.png" width="120" height="120" alt="CUEats Logo" style="border-radius: 20px;" />
+<img src="app/src/main/ic_launcher-playstore.png" width="100" height="100" alt="CUEats Logo" style="border-radius: 24px;" />
 
-# CUEats 🍽️
+<br/>
 
-**Your complete campus companion for Chandigarh University**
+```
+  ██████╗██╗   ██╗███████╗ █████╗ ████████╗███████╗
+ ██╔════╝██║   ██║██╔════╝██╔══██╗╚══██╔══╝██╔════╝
+ ██║     ██║   ██║█████╗  ███████║   ██║   ███████╗
+ ██║     ██║   ██║██╔══╝  ██╔══██║   ██║   ╚════██║
+ ╚██████╗╚██████╔╝███████╗██║  ██║   ██║   ███████║
+  ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝
+```
 
-[![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://play.google.com/store)
-[![Kotlin](https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
-[![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Firebase](https://img.shields.io/badge/Backend-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
-[![Play Store](https://img.shields.io/badge/Available%20on-Play%20Store-34A853?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store)
+### *Your campus. Your food. Your way.*
 
-*Built solo over ~1.5 years of weekends, late nights, and real production experience.*
+<br/>
+
+[![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://play.google.com/store)
+[![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![Play Store](https://img.shields.io/badge/Play%20Store-v1.1.2-34A853?style=flat-square&logo=googleplay&logoColor=white)](https://play.google.com/store)
+[![Android 7.0+](https://img.shields.io/badge/Android%207.0+-API%2024-informational?style=flat-square)](https://developer.android.com/about/versions/nougat)
 
 </div>
 
 ---
 
-## 📖 About the App
+## The origin story
 
-CUEats started as a simple idea: **why should students have to walk to the mess just to see what's for lunch?**
+It started with a single, frustrating question:
 
-What began as a meal-menu viewer grew into a full-featured campus companion — with live shop data, event discovery, smart meal notifications, an interactive campus map, budget tracking, and more. Every feature was discovered through real use, not guesswork.
+> *"Did I just walk 10 minutes to the mess for rajma again?"*
 
-> **Published on Google Play Store** • Version 1.1.2 • Supports Android 7.0+
+CUEats was born in that moment of campus-life pain. What began as a weekend hack to preview the mess menu turned into a 1.5-year, solo-built, fully-shipped Android app — living on the Play Store — used by real students at Chandigarh University.
+
+No team. No funding. No template. Just late nights, stubborn debugging, and genuine love for the problem.
 
 ---
 
-## ✨ Features
+## What's inside
 
-### 🍱 Mess / Meal Menu
-- Weekly mess menu with **Breakfast, Lunch, Snacks & Dinner**
-- Meal detail pages with ingredients and nutritional info
-- Smart scheduled **push notifications** at every meal time (powered by Firebase Cloud Functions + FCM)
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        C U E A T S                          │
+├──────────────┬──────────────┬───────────────┬───────────────┤
+│  🍱 Mess     │  🏪 Shops    │  📅 Events    │  🗺️ Map       │
+│  Menu        │  & Canteens  │  & Announces  │  (OSM)        │
+├──────────────┼──────────────┼───────────────┼───────────────┤
+│  🔔 Smart    │  👤 Profile  │  💰 Budget    │  📦 Widget    │
+│  Notifs      │  & Auth      │  Tracker      │  (Glance)     │
+└──────────────┴──────────────┴───────────────┴───────────────┘
+```
+
+### 🍱 Mess & Meal Menu
+The feature that started it all. Every meal, every day — **Breakfast, Lunch, Snacks, Dinner** — with ingredients and nutritional info. No more surprise rajma.
 
 ### 🏪 Shops & Canteens
-- Browse all on-campus shops with **live menus and offers**
-- Per-item **ratings & reviews** system
-- **Favourite** your go-to shops
-- Offer banners and highlights
+A live directory of every on-campus shop — menus, offers, per-item ratings & reviews, and the ability to favourite your regulars. Think Zomato, but for your hostel gate.
 
 ### 📅 Events & Announcements
-- Discover college events with **full registration support**
-- Swipeable event cards with smooth animations
-- **Deep-link support** — share an event link that opens directly in the app
+Discover, register for, and share college events — complete with deep-link support so a shared link opens directly inside the app. Swipeable cards, smooth animations, zero friction.
 
 ### 🗺️ Campus Map
-- Interactive **OpenStreetMap-powered** campus map
-- Navigate to any building, shop, or facility
+OpenStreetMap-powered interactive map of the entire campus. Find any building, shop, or facility without asking five seniors for directions.
 
-### 👤 Profile & Auth
-- **Google Sign-In** via Firebase Authentication
-- View your registered events and meal preferences
-- Per-user notification settings synced to the cloud
+### 🔔 Smart Meal Notifications
+Firebase Cloud Functions fire scheduled FCM notifications for every meal window. Per-user opt-in, synced to Firestore. Invalid tokens are cleaned up automatically.
+
+| Notification | Weekday | Weekend |
+|---|---|---|
+| Breakfast | 7:30 AM | 8:00 AM |
+| Lunch | 12:00 PM | 12:30 PM |
+| Snacks | 4:30 PM | 4:30 PM |
+| Dinner | 7:30 PM | 7:30 PM |
 
 ### 💰 Budget Tracker *(beta)*
-- Track your daily campus spending across meal types
-
-### 🔔 Smart Notifications
-- Scheduled Firebase Cloud Functions send meal-time reminders
-- Per-user opt-in/out stored in Firestore
-- Invalid FCM tokens automatically cleaned up
+Log your daily campus spending. Know where your money goes before it's gone.
 
 ### 📦 Home Screen Widget
-- Glance-powered **Android widget** showing today's meals right on the home screen
+A **Jetpack Glance** widget that puts today's meal schedule right on your home screen. No app-open needed.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech stack
 
-| Layer | Technology |
+| What | How |
 |---|---|
 | Language | Kotlin |
-| UI Framework | Jetpack Compose + Material 3 |
+| UI | Jetpack Compose + Material 3 |
 | Navigation | Navigation Compose (type-safe routes) |
 | Auth | Firebase Authentication (Google Sign-In) |
-| Database | Firebase Firestore + Realtime Database |
+| Database | Cloud Firestore + Realtime Database |
 | Storage | Firebase Storage |
-| Push Notifications | Firebase Cloud Messaging (FCM) |
-| Backend Functions | Firebase Cloud Functions (Node.js) |
+| Push Notifications | Firebase Cloud Messaging |
+| Backend | Firebase Cloud Functions (Node.js) |
 | Maps | OSMDroid (OpenStreetMap) |
 | Images | Coil |
 | Widget | Jetpack Glance |
-| Background Work | WorkManager |
+| Background | WorkManager |
 | Local Storage | DataStore Preferences |
 | Animations | Lottie |
-| Minimum SDK | API 24 (Android 7.0) |
-| Target SDK | API 35 (Android 15) |
+| Min / Target SDK | API 24 (Android 7.0) / API 35 (Android 15) |
 
 ---
 
-## 📁 Project Structure
+## Project structure
 
 ```
-CUEats1/
+CUEats/
 ├── app/src/main/java/com/divyansh/cueats/
 │   ├── AnnouncementScreen/    # Events, registration, swipeable cards
 │   ├── BudgetScreen/          # Spending tracker
@@ -109,130 +124,94 @@ CUEats1/
 │   ├── ShopsScreen/           # Shops, ratings, offers
 │   ├── Widget/                # Glance home screen widget
 │   ├── common/                # Shared composables
-│   ├── notifirebase/          # Boot receiver for notifications
+│   ├── notifirebase/          # Boot receiver
 │   ├── ui/                    # Theming
 │   ├── MainActivity.kt        # Entry point + NavHost
-│   ├── NavigateRoute.kt       # Type-safe navigation routes
+│   ├── NavigateRoute.kt       # Type-safe routes
 │   └── SplashScreen.kt        # Animated splash
 └── functions/
-    └── index.js               # Firebase Cloud Functions (scheduled notifications)
+    └── index.js               # Scheduled notification Cloud Functions
 ```
 
 ---
 
-## 🚀 Getting Started
+## Running it locally
 
-### Prerequisites
-- Android Studio Hedgehog or newer
-- JDK 11+
-- A Firebase project with Firestore, Auth, Storage, and Cloud Messaging enabled
+**You'll need:** Android Studio Hedgehog+, JDK 11+, and your own Firebase project (Firestore, Auth, Storage, FCM enabled).
 
-### Setup
+```bash
+# 1. Clone
+git clone https://github.com/Divyansh5070/CUEats.git
+cd CUEats
 
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/Divyansh5070/CUEats.git
-   cd CUEats
-   ```
+# 2. Drop in your Firebase config
+# Download google-services.json from your Firebase console
+# → place at app/google-services.json
 
-2. **Add Firebase config**
-   - Download `google-services.json` from your Firebase project console
-   - Place it at `app/google-services.json`
+# 3. Signing (release builds only)
+cp secrets.properties.example secrets.properties
+# Fill in your keystore credentials
 
-3. **Add signing secrets** *(for release builds only)*
-   ```bash
-   cp secrets.properties.example secrets.properties
-   # Edit secrets.properties and fill in your keystore credentials
-   ```
+# 4. Open in Android Studio → let Gradle sync → Run 'app'
+```
 
-4. **Open in Android Studio** and let Gradle sync
-
-5. **Run on a device or emulator**
-   ```
-   Run > Run 'app'
-   ```
+> Firebase credentials and service account keys are intentionally excluded. You need your own Firebase project to deploy the backend functions.
 
 ---
 
-## ☁️ Firebase Functions (Backend)
-
-The `functions/` folder contains scheduled Cloud Functions that send meal-time notifications to all opted-in users via FCM.
-
-| Function | Schedule (IST) |
-|---|---|
-| `sendBreakfastNotifications` | 7:30 AM weekdays |
-| `sendBreakfastNotificationsWeekend` | 8:00 AM weekends |
-| `sendLunchNotifications` | 12:00 PM weekdays |
-| `sendLunchNotificationsWeekend` | 12:30 PM weekends |
-| `sendSnackNotifications` | 4:30 PM daily |
-| `sendDinnerNotifications` | 7:30 PM daily |
-
-> **Note:** Firebase credentials (`google-services.json`, service account keys) are not included in this repo for security reasons. You'll need your own Firebase project to deploy.
-
----
-
-## 🗺️ App Navigation Flow
+## Navigation map
 
 ```
-Splash Screen
-     │
-     ▼
- Login Screen (Google Sign-In)
-     │
-     ▼
- Home Screen ──────────────────────────────────┐
-     │                                          │
-     ├── Mess Menu → Meal Details               │
-     ├── Shops → Shop Menu                      │
-     ├── Events → Event Details → Register      │
-     ├── Campus Map                             │
-     ├── Notifications                          │
-     └── Profile ─────────────────────────────-┘
+Splash
+  └── Login (Google)
+        └── Home
+              ├── Mess Menu → Meal Detail
+              ├── Shops → Shop Menu → Item Reviews
+              ├── Events → Event Detail → Register
+              ├── Campus Map
+              ├── Notifications Settings
+              └── Profile
 ```
 
 ---
 
-## 📸 Screenshots
+## What's next
 
-> *Coming soon — screenshots & screen recordings will be added here.*
-
----
-
-## 🛣️ Roadmap
-
-- [ ] Dark mode toggle (user preference)
-- [ ] Meal rating / feedback system
+- [ ] Dark mode (user-controlled)
+- [ ] Meal rating & feedback
 - [ ] Real-time mess stock availability
-- [ ] iOS version (SwiftUI)
+- [ ] iOS (SwiftUI)
 - [ ] Social sharing for events
 
 ---
 
-## 👨‍💻 Developer
+## The developer
 
-**Divyansh Sharma**
-- GitHub: [@Divyansh5070](https://github.com/Divyansh5070)
-- LinkedIn: [Divyansh Sharma](https://linkedin.com/in/divyansh5070)
+**Divyansh Sharma** — built this solo, from idea to Play Store, while studying full-time.
 
----
-
-## ⭐ A Note From the Developer
-
-This app was built completely solo — from the initial idea to Play Store deployment — over about **1.5 years** while studying full-time. It wasn't always smooth. There were evenings spent debugging FCM tokens, nights rewriting the shop UI from scratch, and moments where I almost gave up. But every feature you see here came from real persistence, real learning, and real care for making something useful for my campus community.
-
-It may not have the download numbers I once dreamed of — but building it taught me more than any classroom could.
-
-If you found this project useful or inspiring, a ⭐ on the repo would mean a lot!
+- GitHub → [@Divyansh5070](https://github.com/Divyansh5070)
+- LinkedIn → [Divyansh Sharma](https://linkedin.com/in/divyansh5070)
 
 ---
 
-## 📄 License
+## A personal note
 
-This project is open-sourced for educational and portfolio purposes.
-You're welcome to study the code and architecture — but please don't publish derivative apps to the Play Store.
+There were evenings lost to FCM token bugs. Nights where the shop UI got rewritten from scratch. Moments of *why am I even doing this?*
+
+But every single feature in this app came from real persistence, not a tutorial. The download count was never the point — the learning was. Building CUEats taught me more about Android, Firebase, product thinking, and shipping under pressure than any classroom ever could.
+
+If this project helped you — as a reference, as inspiration, or just as proof that solo-shipped apps are possible — a ⭐ on the repo would genuinely make my day.
+
+---
+
+## License
+
+Open-sourced for learning and portfolio purposes. Study the code, fork for personal projects, learn from the architecture — but please don't republish derivative apps to the Play Store.
 
 ---
 
 <div align="center">
-Built with ❤️ at <strong>Chandigarh University</strong>
+
+Built with stubbornness, coffee, and real care — at **Chandigarh University**
+
 </div>
