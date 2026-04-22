@@ -34,26 +34,20 @@ fun SplashScreen(
     navController: NavController? = null,
     authViewModel: AuthViewModel? = null
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
+
 
     // Modern gradient colors that adapt to theme
-    val gradientColors = if (isDarkTheme) {
-        listOf(
-            Color(0xFF1A1A2E),
-            Color(0xFF16213E),
-            Color(0xFF0F3460)
-        )
-    } else {
+    val gradientColors =
         listOf(
             Color(0xFFFF6B35), // Your brand orange
             Color(0xFFFF8A50),
             Color(0xFFFFA365)
         )
-    }
 
-    val accentColor = if (isDarkTheme) Color(0xFFFF6B35) else Color(0xFFFFFFFF)
-    val textColor = if (isDarkTheme) Color(0xFFE8E8E8) else Color(0xFFFFFFFF)
-    val subtitleColor = if (isDarkTheme) Color(0xFFB0B0B0) else Color(0xFFF0F0F0)
+
+    val accentColor = Color(0xFFFFFFFF)
+    val textColor =  Color(0xFFFFFFFF)
+    val subtitleColor = Color(0xFFF0F0F0)
 
     // Animation states - FIXED: Initialize as true so animations start immediately
     var startAnimation by remember { mutableStateOf(false) }
@@ -167,7 +161,7 @@ fun SplashScreen(
             // Logo with rounded corners
             Image(
                 painter = painterResource(id = R.drawable.logo33),
-                contentDescription = "CuEats Logo",
+                contentDescription = "Campus Life Logo",
                 modifier = Modifier
                     .size(180.dp)
                     .clip(RoundedCornerShape(24.dp)) // Rounded corners
@@ -181,7 +175,7 @@ fun SplashScreen(
 
         // App title with modern typography
         Text(
-            text = "Campus Eats",
+            text = "Campus Life",
             fontSize = 48.sp,
             fontWeight = FontWeight.ExtraBold,
             color = accentColor,

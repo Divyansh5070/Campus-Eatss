@@ -30,7 +30,9 @@ import coil.compose.AsyncImage
 import com.divyansh.cueats.LoginRoute
 import com.divyansh.cueats.LoginScreen.AuthViewModel
 import com.divyansh.cueats.Notification.AboutScreen
+import com.divyansh.cueats.Notification.NotificationPreferences
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -481,6 +483,15 @@ fun QuickActionsSection(
     textSecondaryColor: Color,
     primaryOrange: Color
 ) {
+    val notificationPrefs = remember { NotificationPreferences() }
+    var notificationsEnabled by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(false) }
+    
+    // Load initial preference
+    LaunchedEffect(Unit) {
+        notificationsEnabled = notificationPrefs.getNotificationPreference()
+    }
+    
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -502,10 +513,31 @@ fun QuickActionsSection(
                 modifier = Modifier.padding(bottom = 12.dp)
             )
             
+            // Notification Toggle
+            NotificationToggleItem(
+                enabled = notificationsEnabled,
+                isLoading = isLoading,
+                primaryOrange = primaryOrange,
+                textColor = textColor,
+                textSecondaryColor = textSecondaryColor,
+                onToggle = { newValue ->
+                    isLoading = true
+                    kotlinx.coroutines.GlobalScope.launch {
+                        val success = notificationPrefs.setNotificationPreference(newValue)
+                        if (success) {
+                            notificationsEnabled = newValue
+                        }
+                        isLoading = false
+                    }
+                }
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
             // About App
             ActionItem(
                 icon = Icons.Default.Info,
-                title = "About Campus Eats",
+                title = "About Campus Life",
                 subtitle = "Learn more about the app",
                 primaryOrange = primaryOrange,
                 textColor = textColor,
@@ -515,6 +547,75 @@ fun QuickActionsSection(
         }
     }
 }
+
+@Composable
+fun NotificationToggleItem(
+    enabled: Boolean,
+    isLoading: Boolean,
+    primaryOrange: Color,
+    textColor: Color,
+    textSecondaryColor: Color,
+    onToggle: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(primaryOrange.copy(alpha = 0.05f))
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(primaryOrange.copy(alpha = 0.1f), CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Notifications,
+                contentDescription = "Notifications",
+                tint = primaryOrange,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        
+        Spacer(modifier = Modifier.width(12.dp))
+        
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Meal Notifications",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = textColor
+            )
+            Text(
+                text = if (enabled) "Get notified for meals" else "Notifications disabled",
+                fontSize = 13.sp,
+                color = textSecondaryColor
+            )
+        }
+        
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                color = primaryOrange,
+                strokeWidth = 2.dp
+            )
+        } else {
+            Switch(
+                checked = enabled,
+                onCheckedChange = onToggle,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = primaryOrange,
+                    uncheckedThumbColor = Color.White,
+                    uncheckedTrackColor = textSecondaryColor.copy(alpha = 0.3f)
+                )
+            )
+        }
+    }
+}
+
 
 @Composable
 fun ActionItem(

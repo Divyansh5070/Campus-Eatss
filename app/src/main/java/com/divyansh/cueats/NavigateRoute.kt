@@ -34,3 +34,14 @@ object CampusMapRoute
 
 @Serializable
 object ProfileRoute
+
+@Serializable
+object EventsRoute
+
+@Serializable
+data class EventDetailsRoute(val eventId: String)
+
+@Serializable
+data class EventRegistrationRoute(val eventId: String, val eventTitle: String)
+
+

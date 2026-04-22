@@ -1,0 +1,786 @@
+{
+  "meals": {
+    "week1": {
+      "Mon": {
+        "date": "01/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Veg Poha (Peanuts)",
+            "Masala Aloo Sandwich",
+            "Milk",
+            "Dhaba Chutney",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Kadhi Pakora",
+            "Tinda Masala",
+            "Chapati",
+            "Steamed Rice",
+            "Fryms",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Sweet Bun",
+            "Zakir All - Brittania Tea Cake",
+            "Girls All - Sweet Bun",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Dal Makhani",
+            "Dum Aloo kashmiri",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Tue": {
+        "date": "02/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Pav",
+            "Bhaji",
+            "Milk",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Lehsuni Dal Tadka",
+            "Aloo Matar Dry",
+            "Chapati",
+            "Masala Chass",
+            "Steamed Rice",
+            "Beetroot Salad (vinaigrette)",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Biscuits",
+            "Zakir All - Namak Pare",
+            "Girls All - Biscuits",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Dal Panchmel",
+            "Karaala/bitter gourd Paneer",
+            "Chicken Chettinad",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad+Onion",
+            "Mix Pickle",
+            "Green Chilli",
+            "Atta Halwa"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Wed": {
+        "date": "03/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Namkeen daliya",
+            "Boiled Egg",
+            "Banana",
+            "Bread Jam",
+            "Fat spread",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Kali Masoor dal",
+            "Dahi Wale aloo Gravy",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Biscuits",
+            "Zakir All - Namak Pare",
+            "Girls All - Biscuits",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Dhaba dal Fry",
+            "Bhindi Aloo",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli",
+            "Chocolate"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Thu": {
+        "date": "04/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Aloo Pyaaz paratha",
+            "Curd",
+            "Fat spread",
+            "Mix Pickle",
+            "Tea"
+          ],
+          "time": "8:00 AM - 9:30 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Chana dal tadka",
+            "Mix Veg",
+            "Chapati",
+            "Cucumber raita",
+            "Steamed Rice",
+            "Beet Cucumber Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:30 PM - 2:00 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Pasta in red sauce",
+            "Zakir All - Pasta in red sauce",
+            "Girls All - Aloo Pyaaz Kachori",
+            "Chutney",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Sabut Matar Dal",
+            "Veg manchurian",
+            "Chapati",
+            "Noodles",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Fri": {
+        "date": "05/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Chhole",
+            "Bhature",
+            "Lachha Onion",
+            "Mix Pickle",
+            "Tea"
+          ],
+          "time": "8:00 AM - 9:30 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Toor Dal Tadka",
+            "Hing Dhaniya Ke Aloo",
+            "Chapati",
+            "Onion Raita",
+            "Veg Dum Biryani",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:30 PM - 2:00 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Brittania Tea Cake",
+            "Zakir All - Sweet Bun",
+            "Girls All - Sweet Bun",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Paneer Kohlapuri",
+            "Egg Curry",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli",
+            "Sweet Boondi"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Sat": {
+        "date": "06/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Rawa Upma",
+            "Mixed sprouts",
+            "Milk",
+            "Mix Pickle",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Rajma Raseela",
+            "Baigan Bharta",
+            "Chapati",
+            "Mix Veg raita",
+            "Jeera Rice",
+            "Lachha Onion",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Biscuits",
+            "Zakir All - Aloo Pyaaz Kachori",
+            "Girls All - Biscuits",
+            "Chutney",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Maha ki Dal",
+            "Aloo Capsicum",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli",
+            "Sweet Boondi"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Sun": {
+        "date": "07/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Namkeen semiya",
+            "Masala Aloo Sandwich",
+            "Tomato Ketchup",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Pindi Chhole",
+            "Khatta Meetha Kaddu",
+            "Chapati",
+            "Boondi Raita",
+            "Steamed Rice",
+            "Kachumber Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Mix Namkeen",
+            "Zakir All - Mix Namkeen",
+            "Girls All - Mix Namkeen",
+            "Nimbu Pani"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Veg Sambar",
+            "Mix Veg curry",
+            "Chapati",
+            "Steamed rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      }
+    },
+    "week2": {
+      "Mon": {
+        "date": "08/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Besan ka chilla",
+            "Cornflakes",
+            "Milk",
+            "Chutney",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Dal Makhani",
+            "Aloo Amritsari badi",
+            "Chapati",
+            "Ghiya Raita",
+            "Jeera Rice",
+            "Aloo Chana Chaat",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Namkeen",
+            "Zakir All - Namkeen",
+            "Girls All - Samosa",
+            "Chutney",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Lobiya Dal",
+            "Kadahi Paneer",
+            "Chicken Masala Home style",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad+Onion",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Tue": {
+        "date": "09/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Poori",
+            "Subji",
+            "Mix Pickle",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Kadhi Pakora",
+            "Nutty Mutter",
+            "Chapati",
+            "Steamed Rice",
+            "Fryms",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Oreo Biscuit",
+            "Zakir All - Oreo Biscuit",
+            "Girls All - Oreo Biscuit",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Kala Chana Raseela",
+            "Lauki masala",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli",
+            "Soan Papdi"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Wed": {
+        "date": "10/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Sweet Dalia",
+            "Banana",
+            "Bread",
+            "Masala Omelette",
+            "Fat spread Jam",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Yellow dal tadka",
+            "Aloo Capsicum",
+            "Chapati",
+            "Masala Chass",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Aloo Pyaaz Kachori",
+            "Zakir All - Brittania Tea Cake",
+            "Girls All - Brittania Tea Cake",
+            "Chutney",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Amritsari Chhole",
+            "Mix Veg",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Thu": {
+        "date": "11/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Aloo pyaaz Prantha",
+            "Plain Curd",
+            "Fat Spread",
+            "Mix Pickle",
+            "Tea"
+          ],
+          "time": "8:00 AM - 9:30 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Rajma Masala",
+            "Tinda Masala",
+            "Chapati",
+            "Cucumber Raita",
+            "Steamed Rice",
+            "Beetroot Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:30 PM - 2:00 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Biscuits",
+            "Zakir All - Biscuits",
+            "Girls All - Biscuits",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Dhaba Dal",
+            "Aloo Bhindi",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli",
+            "Semiya milk"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Fri": {
+        "date": "12/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Chhole",
+            "Bhature",
+            "Sirca Onion",
+            "Mix Pickle",
+            "Tea"
+          ],
+          "time": "8:00 AM - 9:30 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Jeera Aloo",
+            "Chapati",
+            "Mix Veg Raita",
+            "Hydrabadi Veg Dum Biryani",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:30 PM - 2:00 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Bread Pakora",
+            "Zakir All - Bread Pakora",
+            "Girls All - Brittania Tea Cake",
+            "Tomato ketchup",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Green Moong Dal",
+            "Paneer Do Pyaza",
+            "Egg khatta/Hot Curry",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad+Onion",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Sat": {
+        "date": "13/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Namkeen Semiya",
+            "Cornflakes",
+            "Milk",
+            "Tomato Ketchup",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Kaali Dal Tadka",
+            "Lauki Masala",
+            "Chapati",
+            "Onion Raita",
+            "Jeera Rice",
+            "Kachumber Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Sweet Bun",
+            "Zakir All - Namkeen",
+            "Girls All - Sweet Bun",
+            "Coffee"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Lasooni dal tadka",
+            "Veg manchurian",
+            "Chapati",
+            "Fried Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      },
+      "Sun": {
+        "date": "14/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Ajwaini Parantha",
+            "Aloo Subji",
+            "Mix Pickle",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Chana Dal Fry",
+            "Cabbage Matar",
+            "Chapati",
+            "Ghiya raita",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Pink sauce Pasta",
+            "Zakir All - Pink sauce Pasta",
+            "Girls All - Pink sauce Pasta",
+            "Rasna"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Kala Chana Raseela",
+            "Yam Matar curry",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad",
+            "Mix Pickle",
+            "Green Chilli",
+            "Gulab Jamun"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      }
+    },
+    "week3": {
+      "Mon": {
+        "date": "15/12/2025",
+        "Breakfast": {
+          "type": "Breakfast",
+          "items": [
+            "Aloo Chana",
+            "Luchi",
+            "Milk",
+            "Mix Pickle",
+            "Tea"
+          ],
+          "time": "7:30 AM - 9:00 AM"
+        },
+        "Lunch": {
+          "type": "Lunch",
+          "items": [
+            "Amritsari Chhole",
+            "Khatta Meetha Pumpkin",
+            "Chapati",
+            "Lassi Plain/sweet (sugar separate)",
+            "Steamed Rice",
+            "Lachha Onion",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "12:00 PM - 1:45 PM"
+        },
+        "Snacks": {
+          "type": "Snacks",
+          "items": [
+            "NC All & Outside - Sweet Bun",
+            "Zakir All - Samosa",
+            "Girls All - Namkeen",
+            "Chutney",
+            "Tea"
+          ],
+          "time": "4:30 PM - 5:15 PM"
+        },
+        "Dinner": {
+          "type": "Dinner",
+          "items": [
+            "Kaali Masoor dal",
+            "Paneer Korma",
+            "Chicken Masala",
+            "Chapati",
+            "Steamed Rice",
+            "Green Salad+Onion",
+            "Mix Pickle",
+            "Green Chilli"
+          ],
+          "time": "7:30 PM - 9:00 PM"
+        }
+      }
+    }
+  }
+}

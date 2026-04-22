@@ -3,7 +3,10 @@
 
     <!-- Your main app theme -->
     <style name="Theme.CUEats" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Add your existing theme attributes here if any -->
+        <!-- Fix black screen on launch by setting window background to match splash -->
+        <item name="android:windowBackground">@color/splash_background</item>
+        <!-- Ensure smooth transitions -->
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 
 </resources>

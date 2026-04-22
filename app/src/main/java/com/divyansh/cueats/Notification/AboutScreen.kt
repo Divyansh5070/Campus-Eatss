@@ -70,10 +70,10 @@ fun AboutScreen(navController: NavController) {
     val primaryOrange = Color(0xFFFF6B01)
     val lightBackground = Color(0xFFF6F7FB)
     val darkBackground = Color(0xFF121212)
-    val surfaceColor = if (systemTheme) Color(0xFF202020) else Color.White
-    val textColor = if (systemTheme) Color.White else Color.Black
-    val textSecondaryColor = if (systemTheme) Color.LightGray else Color.Gray
-    val cardBackground = if (systemTheme) Color(0xFF2A2A2A) else Color(0xFFF8F9FA)
+    val surfaceColor =  Color.White
+    val textColor =  Color.Black
+    val textSecondaryColor = Color.Gray
+    val cardBackground =  Color(0xFFF8F9FA)
 
     // Feedback data class
     data class FeedbackData(
@@ -200,7 +200,7 @@ fun AboutScreen(navController: NavController) {
                 )
             )
         },
-        containerColor = if (systemTheme) darkBackground else lightBackground
+        containerColor =lightBackground
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -212,7 +212,7 @@ fun AboutScreen(navController: NavController) {
         ) {
             // App Information Card
             InfoCard(
-                title = "Campus Eats",
+                title = "Campus Life",
                 icon = Icons.Default.Star,
                 backgroundColor = cardBackground,
                 textColor = textColor,
@@ -220,7 +220,7 @@ fun AboutScreen(navController: NavController) {
             ) {
                 InfoText(
                     text = "Still playing the daily guessing game with the mess menu?\n" +
-                            "Campus Eats lets you finally plan your meals, discover food spots around campus, and avoid those heartbreaking thali surprises — because you deserve better than mystery meals.",
+                            "Campus Life lets you finally plan your meals, discover food spots around campus, and avoid those heartbreaking thali surprises — because you deserve better than mystery meals.",
                     color = textSecondaryColor
                 )
 
@@ -247,9 +247,9 @@ fun AboutScreen(navController: NavController) {
                 secondaryTextColor = textSecondaryColor
             ) {
                 InfoText(
-                    text = "Hi! I’m Divyansh — the brain, hands, and late-night coder behind *Campus Eats*. After years of suffering through random mess menus, mystery dinners, and apps on Play Store that only show meals (and not very well, honestly), I hit my breaking point and thought: 'If no one’s fixing this… fine, I’ll build it myself.'\n" +
+                    text = "Hi! I’m Divyansh — the brain, hands, and late-night coder behind *Campus Life*. After years of suffering through random mess menus, mystery dinners, and apps on Play Store that only show meals (and not very well, honestly), I hit my breaking point and thought: 'If no one’s fixing this… fine, I’ll build it myself.'\n" +
                             "\n" +
-                            "That’s how *Campus Eats* came to life. Not just another 'meal menu' app, but something actually useful — from daily menus to food spots around campus that every student wishes they knew about before hunger strikes.\n" +
+                            "That’s how *Campus Life* came to life. Not just another 'meal menu' app, but something actually useful — from daily menus to food spots around campus that every student wishes they knew about before hunger strikes.\n" +
                             "\n" +
                             "Of course, it wasn’t all smooth. This app is powered by Maggi at 2 AM, endless cups of chai, and a fair share of coding meltdowns. And I’ve got to give credit where it’s due — *Anurag* helps keep the menus fresh and hunts down food spots, so you don’t have to wander cluelessly when you’re starving.\n" +
                             "\n" +
@@ -388,7 +388,7 @@ fun AboutScreen(navController: NavController) {
                     onClick = {
                         val intent = Intent(Intent.ACTION_SENDTO).apply {
                             data = Uri.parse("mailto:cueats2025@gmail.com")
-                            putExtra(Intent.EXTRA_SUBJECT, "Campus Eats - General Inquiry")
+                            putExtra(Intent.EXTRA_SUBJECT, "Campus Life - General Inquiry")
                         }
                         context.startActivity(intent)
                     }
@@ -406,7 +406,7 @@ fun AboutScreen(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Thank you for using Campus Eats!",
+                        text = "Thank you for using Campus Life!",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = primaryOrange,
@@ -421,7 +421,7 @@ fun AboutScreen(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "© 2025 Campus Eats. All rights reserved.",
+                        text = "© 2025 Campus Life. All rights reserved.",
                         fontSize = 12.sp,
                         color = textSecondaryColor.copy(alpha = 0.7f),
                         textAlign = TextAlign.Center
@@ -493,9 +493,9 @@ fun showEmailFallback(context: Context, name: String, email: String, message: St
     val intent = Intent(Intent.ACTION_SEND).apply {
         this.type = "text/plain"
         putExtra(Intent.EXTRA_EMAIL, arrayOf("cueats2025@gmail.com"))
-        putExtra(Intent.EXTRA_SUBJECT, "Campus Eats - $type from $name")
+        putExtra(Intent.EXTRA_SUBJECT, "Campus Life - $type from $name")
         putExtra(Intent.EXTRA_TEXT, """
-                📱 Campus Eats App Feedback
+                📱 Campus Life App Feedback
                 
                 Type: $type
                 Name: $name
@@ -505,7 +505,7 @@ fun showEmailFallback(context: Context, name: String, email: String, message: St
                 $message
                 
                 ---
-                Sent from Campus Eats Mobile App
+                Sent from Campus Life Mobile App
                 Version: 1.1.1
                 Date: ${java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault()).format(java.util.Date())}
                 Device: ${Build.MANUFACTURER} ${Build.MODEL} (Android ${Build.VERSION.RELEASE})
@@ -827,7 +827,7 @@ private fun FeedbackDialog(
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = "✨ Your feedback will be sent instantly to our team and helps us improve Campus Eats!",
+                            text = "✨ Your feedback will be sent instantly to our team and helps us improve Campus Life!",
                             fontSize = 12.sp,
                             color = Color(0xFFFF6B01),
                             modifier = Modifier.padding(12.dp)

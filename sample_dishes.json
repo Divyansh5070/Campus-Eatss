@@ -1,0 +1,144 @@
+{
+  "dishes": {
+    "dhaba_chutney": {
+      "dishId": "dhaba_chutney",
+      "name": "Dhaba Chutney",
+      "calories": 45,
+      "rating": 4.2,
+      "ratingCount": 156,
+      "isVeg": true,
+      "isHot": false,
+      "nutrition": {
+        "protein": 2,
+        "carbs": 8,
+        "fat": 1
+      }
+    },
+    "masala_aloo_sandwich": {
+      "dishId": "masala_aloo_sandwich",
+      "name": "Masala Aloo Sandwich",
+      "calories": 320,
+      "rating": 4.5,
+      "ratingCount": 234,
+      "isVeg": true,
+      "isHot": true,
+      "nutrition": {
+        "protein": 8,
+        "carbs": 45,
+        "fat": 12
+      }
+    },
+    "milk": {
+      "dishId": "milk",
+      "name": "Milk",
+      "calories": 150,
+      "rating": 4.0,
+      "ratingCount": 189,
+      "isVeg": true,
+      "isHot": false,
+      "nutrition": {
+        "protein": 8,
+        "carbs": 12,
+        "fat": 8
+      }
+    },
+    "tea": {
+      "dishId": "tea",
+      "name": "Tea",
+      "calories": 80,
+      "rating": 4.3,
+      "ratingCount": 312,
+      "isVeg": true,
+      "isHot": true,
+      "nutrition": {
+        "protein": 1,
+        "carbs": 15,
+        "fat": 2
+      }
+    },
+    "veg_poha_peanuts": {
+      "dishId": "veg_poha_peanuts",
+      "name": "Veg Poha (Peanuts)",
+      "calories": 250,
+      "rating": 4.6,
+      "ratingCount": 278,
+      "isVeg": true,
+      "isHot": true,
+      "nutrition": {
+        "protein": 6,
+        "carbs": 38,
+        "fat": 8
+      }
+    },
+    "kadhi_pakora": {
+      "dishId": "kadhi_pakora",
+      "name": "Kadhi Pakora",
+      "calories": 280,
+      "rating": 4.4,
+      "ratingCount": 201,
+      "isVeg": true,
+      "isHot": true,
+      "nutrition": {
+        "protein": 7,
+        "carbs": 32,
+        "fat": 14
+      }
+    },
+    "zakiriya_paratha": {
+      "dishId": "zakiriya_paratha",
+      "name": "Zakiriya Paratha",
+      "calories": 180,
+      "rating": 4.7,
+      "ratingCount": 156,
+      "isVeg": true,
+      "isHot": true,
+      "nutrition": {
+        "protein": 5,
+        "carbs": 28,
+        "fat": 6
+      }
+    },
+    "rice": {
+      "dishId": "rice",
+      "name": "Rice",
+      "calories": 200,
+      "rating": 4.1,
+      "ratingCount": 145,
+      "isVeg": true,
+      "isHot": true,
+      "nutrition": {
+        "protein": 4,
+        "carbs": 45,
+        "fat": 0
+      }
+    },
+    "dal": {
+      "dishId": "dal",
+      "name": "Dal",
+      "calories": 180,
+      "rating": 4.3,
+      "ratingCount": 198,
+      "isVeg": true,
+      "isHot": true,
+      "nutrition": {
+        "protein": 9,
+        "carbs": 20,
+        "fat": 6
+      }
+    },
+    "roti": {
+      "dishId": "roti",
+      "name": "Roti",
+      "calories": 70,
+      "rating": 4.2,
+      "ratingCount": 167,
+      "isVeg": true,
+      "isHot": true,
+      "nutrition": {
+        "protein": 3,
+        "carbs": 15,
+        "fat": 0
+      }
+    }
+  }
+}

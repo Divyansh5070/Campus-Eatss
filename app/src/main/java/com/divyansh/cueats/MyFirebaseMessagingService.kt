@@ -28,29 +28,45 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if (remoteMessage.data.isNotEmpty()) {
             Log.d(TAG, "Message data payload: ${remoteMessage.data}")
 
+            val type = remoteMessage.data["type"]
+            
+            // Handle meal notifications
+            if (type == "meal_notification") {
+                val mealName = remoteMessage.data["mealName"] ?: "Meal"
+                val message = remoteMessage.data["message"] ?: "Time to eat!"
+                
+                // Show notification (works in both foreground and background)
+                sendMealNotification(mealName, message)
+                return
+            }
+            
+            // Handle other notification types
             val title = remoteMessage.data["title"] ?: "New Notification"
             val message = remoteMessage.data["message"] ?: "You have a new notification"
             val timestamp = remoteMessage.data["timestamp"]?.toLongOrNull() ?: System.currentTimeMillis()
-
+            
             // ✅ Store notification in Firestore
             storeNotification(title, message, timestamp)
-
             // ✅ Show notification
             sendNotification(title, message)
         }
 
-        // ✅ Check if the message contains a notification payload
+        // ✅ Check if the message contains a notification payload (for non-meal notifications)
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
+            
+            // Only handle if it's not a meal notification (those are auto-handled)
+            val isMealNotification = remoteMessage.data["type"] == "meal_notification"
+            if (!isMealNotification) {
+                val title = it.title ?: "New Notification"
+                val message = it.body ?: "You have a new notification"
 
-            val title = it.title ?: "New Notification"
-            val message = it.body ?: "You have a new notification"
+                // ✅ Store notification in Firestore
+                storeNotification(title, message, System.currentTimeMillis())
 
-            // ✅ Store notification in Firestore
-            storeNotification(title, message, System.currentTimeMillis())
-
-            // ✅ Show notification
-            sendNotification(title, message)
+                // ✅ Show notification
+                sendNotification(title, message)
+            }
         }
     }
 
@@ -141,5 +157,45 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         notificationManager.notify(0, notificationBuilder.build())
+    }
+
+    private fun sendMealNotification(mealName: String, messageBody: String) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.putExtra("navigate_to", "meals")
+
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val channelId = "meal_reminder_channel"
+        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.logo33)
+            .setContentTitle("$mealName Time! 🍽️")
+            .setContentText(messageBody)
+            .setAutoCancel(true)
+            .setSound(defaultSoundUri)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(messageBody))
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId, 
+                "Meal Reminders",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notifications for meal times"
+                enableVibration(true)
+                vibrationPattern = longArrayOf(0, 500, 200, 500)
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        notificationManager.notify(mealName.hashCode(), notificationBuilder.build())
     }
 }

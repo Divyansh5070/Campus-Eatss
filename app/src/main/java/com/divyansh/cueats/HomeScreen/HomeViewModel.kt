@@ -1,15 +1,16 @@
 package com.divyansh.cueats.HomeScreen
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.divyansh.cueats.AnnouncementScreen.Announcement
+import com.divyansh.cueats.AnnouncementScreen.AnnouncementRepository
+import com.divyansh.cueats.ShopsScreen.Shop
+import com.divyansh.cueats.ShopsScreen.ShopViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 
 data class MealInfo(
@@ -26,6 +27,7 @@ data class HomeScreenState(
     val nextMeal: MealInfo? = null,
     val mealCountdown: String = "",
     val announcements: List<Announcement> = emptyList(),
+    val featuredShops: List<Shop> = emptyList(),
     val isLoading: Boolean = true,
     val error: String? = null
 )
@@ -35,6 +37,7 @@ class HomeViewModel : ViewModel() {
     val state: StateFlow<HomeScreenState> = _state
 
     private val announcementRepository = AnnouncementRepository()
+    private val shopViewModel = ShopViewModel()
 
     companion object {
         private const val TAG = "HomeViewModel"
@@ -43,6 +46,7 @@ class HomeViewModel : ViewModel() {
     init {
         loadHomeData()
         startMealCountdown()
+        loadFeaturedShops()
     }
 
     /**
@@ -279,5 +283,20 @@ class HomeViewModel : ViewModel() {
         _state.value = _state.value.copy(mealCountdown = countdownText)
     }
 
+    /**
+     * Load random featured shops (5-10 shops)
+     */
+    private fun loadFeaturedShops() {
+        viewModelScope.launch {
+            try {
+                val allShops = shopViewModel.getShops()
+                val randomShops = allShops.shuffled().take((5..10).random())
+                _state.value = _state.value.copy(featuredShops = randomShops)
+                Log.d(TAG, "Loaded ${randomShops.size} featured shops")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading featured shops", e)
+            }
+        }
+    }
 
 }

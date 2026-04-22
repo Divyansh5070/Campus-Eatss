@@ -80,12 +80,14 @@ class AuthViewModel : ViewModel() {
             result.fold(
                 onSuccess = { user ->
                     Log.d(TAG, "Email registration successful for: ${user.email}")
+                    val role = authRepository.getUserRole(user.uid)
                     _authState.value = _authState.value.copy(
                         isLoading = false,
                         user = user,
                         isLoggedIn = true,
                         error = null
                     )
+                    Log.d(TAG, "User role: $role")
                 },
                 onFailure = { exception ->
                     Log.e(TAG, "Email registration failed", exception)
@@ -111,6 +113,7 @@ class AuthViewModel : ViewModel() {
                     Log.d(TAG, "- UID: ${user.uid}")
                     Log.d(TAG, "- Display Name: ${user.displayName}")
 
+                    val role = authRepository.getUserRole(user.uid)
                     _authState.value = _authState.value.copy(
                         isLoading = false,
                         user = user,
@@ -118,7 +121,7 @@ class AuthViewModel : ViewModel() {
                         error = null
                     )
 
-                    Log.d(TAG, "Auth state updated - isLoggedIn: ${_authState.value.isLoggedIn}")
+                    Log.d(TAG, "Auth state updated - isLoggedIn: ${_authState.value.isLoggedIn}, role: $role")
                     Log.d(TAG, "Auth state user: ${_authState.value.user?.email}")
 
                     // Force a delay to ensure state propagation

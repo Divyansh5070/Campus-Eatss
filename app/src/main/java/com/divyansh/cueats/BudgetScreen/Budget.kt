@@ -144,7 +144,7 @@ fun BudgetRecommendationScreen(navController: NavController) {
                         }
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            "Campus Eats",
+                            "Campus Life",
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = playfairFont

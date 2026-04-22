@@ -30,6 +30,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -64,17 +65,16 @@ fun NotificationScreen(
     navController: NavController,
     notificationViewModel: NotificationViewModel = viewModel()
 ) {
-    val systemTheme = isSystemInDarkTheme()
     val systemUiController = rememberSystemUiController()
 
     // Theme colors
     val primaryOrange = Color(0xFFFF6B01)
     val lightBackground = Color(0xFFF6F7FB)
     val darkBackground = Color(0xFF121212)
-    val surfaceColor = if (systemTheme) Color(0xFF202020) else Color.White
-    val textColor = if (systemTheme) Color.White else Color.Black
-    val textSecondaryColor = if (systemTheme) Color.LightGray else Color.Gray
-    val cardBackground = if (systemTheme) Color(0xFF2A2A2A) else Color(0xFFF8F9FA)
+    val surfaceColor =  Color.White
+    val textColor =Color.Black
+    val textSecondaryColor = Color.Gray
+    val cardBackground =  Color(0xFFF8F9FA)
 
     // Observe ViewModel states
     val notifications by notificationViewModel.notifications.observeAsState(emptyList())
@@ -183,7 +183,7 @@ fun NotificationScreen(
                 )
             )
         },
-        containerColor = if (systemTheme) darkBackground else lightBackground
+        containerColor = lightBackground
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -408,44 +408,60 @@ fun NotificationIconWithBadge(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
-            .size(50.dp)
-            .clip(CircleShape)
-            .clickable { onClick() }
-    ) {
-        // Bell icon positioned slightly left to accommodate badge
-        Icon(
-            imageVector = Icons.Default.Notifications,
-            contentDescription = "Notifications",
-            tint = Color.White,
-            modifier = Modifier
-                .size(22.dp)
-                .align(Alignment.Center)
-                .offset(x = (-2).dp) // Slightly left to balance with badge
-        )
-
-        // Badge with perfect positioning
-        if (unreadCount > 0) {
+    IconButton(onClick = onClick) {
+        Box(
+            modifier = Modifier.size(36.dp)
+        ) {
+            // Icon container with modern styling
             Box(
                 modifier = Modifier
-                    .size(16.dp)
-                    .align(Alignment.TopEnd)
-                    .offset(x = (-8).dp, y = 8.dp) // Fine-tuned position
+                    .size(36.dp)
                     .background(
-                        color = Color.Red,
+                        color = Color.White.copy(alpha = 0.2f),
+                        shape = CircleShape
+                    )
+                    .border(
+                        width = 2.dp,
+                        color = Color.White.copy(alpha = 0.8f),
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = if (unreadCount > 99) "99+" else unreadCount.toString(),
-                    color = Color.White,
-                    fontSize = if (unreadCount > 9) 8.sp else 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
                 )
+            }
+
+            // Badge with perfect positioning
+            if (unreadCount > 0) {
+                Box(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(x = 2.dp, y = (-2).dp)
+                        .background(
+                            color = Color.Red,
+                            shape = CircleShape
+                        )
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFF67249),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (unreadCount > 99) "99+" else unreadCount.toString(),
+                        color = Color.White,
+                        fontSize = if (unreadCount > 9) 8.sp else 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1
+                    )
+                }
             }
         }
     }

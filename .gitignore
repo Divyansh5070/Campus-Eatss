@@ -1,15 +1,76 @@
+# ============================================================
+#  CUEats — .gitignore
+#  Protects all sensitive keys, credentials & generated files
+# ============================================================
+
+# ── Android build outputs ────────────────────────────────────
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
 /build
+/app/build
 /captures
 .externalNativeBuild
 .cxx
+
+# ── Gradle internals ─────────────────────────────────────────
+.gradle
+caches/
+daemon/
+kotlin-profile/
+native/
+wrapper/
+android/
+.kotlin/
+
+# ── IDE files ────────────────────────────────────────────────
+.DS_Store
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/markdown.xml
+*.ipr
+*.iws
+
+# ── Local machine config (contains SDK path) ─────────────────
 local.properties
+
+# ── 🔑 SECRETS — NEVER COMMIT THESE ─────────────────────────
+# Keystore signing files
+*.jks
+*.keystore
+upload_certificate.pem
+signing_report.txt
+
+# Secrets file (passwords live here — see secrets.properties.example)
+secrets.properties
+
+# ── 🔥 FIREBASE — NEVER COMMIT THESE ─────────────────────────
+# Google Services config (contains API keys & project IDs)
+google-services.json
+
+# Firebase service-account / admin SDK keys
+*-adminsdk-*.json
+service-account-key.json
+.firebaserc
+firebase.json
+
+# Firebase Cloud Functions dependencies & build output
+functions/node_modules/
+functions/.runtimeconfig.json
+
+# ── Node / NPM (root-level, if any) ──────────────────────────
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# ── Backup & temp files ──────────────────────────────────────
+*.backup
+*.tmp
+.tmp/
+*.orig
+DEPLOY_NOW.md
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log

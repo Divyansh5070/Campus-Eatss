@@ -215,6 +215,9 @@ private fun LoginScreenContent(
         ) {
             AppLogoSection(isSmallScreen = isSmallScreen)
 
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             LoginFormCard(
                 authState = authState,
                 name = name,
@@ -284,7 +287,7 @@ private fun AppLogoSection(isSmallScreen: Boolean) {
 
         Image(
             painter = painterResource(id = com.divyansh.cueats.R.drawable.logo33),
-            contentDescription = "Campus Eats Logo",
+            contentDescription = "Campus Life Logo",
             modifier = Modifier
                 .size(if (isSmallScreen) 90.dp else 110.dp)
                 .shadow(
@@ -300,7 +303,7 @@ private fun AppLogoSection(isSmallScreen: Boolean) {
         Spacer(modifier = Modifier.height(if (isSmallScreen) 14.dp else 20.dp))
 
         Text(
-            text = "Campus Eats",
+            text = "Campus Life",
             fontSize = if (isSmallScreen) 32.sp else 40.sp,
             fontWeight = FontWeight.Black,
             color = AppColors.textPrimary,
@@ -846,7 +849,7 @@ private fun ModeToggleCard(
         ) {
             Text(
                 text = buildAnnotatedString {
-                    append(if (isLoginMode) "New to Campus Eats? " else "Already have an account? ")
+                    append(if (isLoginMode) "New to Campus Life? " else "Already have an account? ")
                     withStyle(
                         style = SpanStyle(
                             color = AppColors.primaryOrange,

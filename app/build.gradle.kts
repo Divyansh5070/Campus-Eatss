@@ -1,4 +1,11 @@
 import org.gradle.kotlin.dsl.implementation
+import java.util.Properties
+
+// Load signing secrets from secrets.properties (gitignored — never committed)
+val secretsFile = rootProject.file("secrets.properties")
+val secrets = Properties().apply {
+    if (secretsFile.exists()) load(secretsFile.inputStream())
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -18,14 +25,31 @@ android {
         minSdk = 24
         //noinspection EditedTargetSdkVersion
         targetSdk = 35
-        versionCode = 15
-        versionName = "1.1.1"
+        versionCode = 16
+        versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    
+    // Enable 16 KB page size support for Android 15+ devices
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("${project.rootDir}/${secrets.getProperty("KEYSTORE_FILE", "upload-keystore.jks")}")
+            storePassword = secrets.getProperty("KEYSTORE_PASSWORD", "")
+            keyAlias = secrets.getProperty("KEY_ALIAS", "upload")
+            keyPassword = secrets.getProperty("KEY_PASSWORD", "")
+        }
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false  // ❌ turn off code shrinking/obfuscation
             ndk {
                 debugSymbolLevel = "NONE" // disable native debug symbols
@@ -64,6 +88,8 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.material3)
     implementation(libs.firebase.crashlytics.buildtools)
+    // Firebase Storage - using BOM version
+    implementation("com.google.firebase:firebase-storage-ktx")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -144,7 +170,6 @@ dependencies {
     // Make sure you have these Compose dependencies too
     implementation("androidx.compose.ui:ui:1.5.8")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.8")
-    implementation("androidx.compose.material3:material3:1.2.0")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
@@ -168,4 +193,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
 
+    // Lottie for animated icons
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Campus Eats</string>
+    <string name="app_name">Campus Life</string>
     <string name="widget_description">View today\'s meal schedule at a glance</string>
     <string name="widget_configure_title">Configure Meals Widget</string>
     <string name="widget_configure_subtitle">Customize your widget preferences</string>

@@ -53,6 +53,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
@@ -94,24 +95,24 @@ fun ShopMenuScreen(navController: NavController) {
     val offers by offerViewModel.offers.observeAsState(emptyList())
 
     // Use system theme colors properly
-    val isDarkTheme = isSystemInDarkTheme()
-    val colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
+    val colorScheme =  lightColorScheme()
     val primaryColor = Color(0xFF47B44C)
 
     // Fix: Use proper theme-aware colors instead of hardcoded ones
-    val backgroundColor = if (isDarkTheme) Color.Black else Color.White
+    val backgroundColor =  Color.White
     val surfaceColor = colorScheme.surface
     val onSurfaceColor = colorScheme.onSurface
     val onSurfaceVariantColor = colorScheme.onSurfaceVariant
     val systemUiController = rememberSystemUiController()
 
-    val primaryOrange = Color(0xFFFF6B01)
+    val primaryBlue = Color(0xFF42A5F5)
 
 
     val ratingViewModel: RatingViewModel = viewModel() // Add this line
     val shopRatings by ratingViewModel.shopRatings.collectAsState() // Add this line
 
-    LaunchedEffect(Unit) {
+    // Optimize: Use key to prevent re-initialization on recomposition
+    LaunchedEffect("rating_init") {
         Log.d("ShopMenuScreen", "Initializing rating system")
         ratingViewModel.initializeRatingSystem()
     }
@@ -128,7 +129,7 @@ fun ShopMenuScreen(navController: NavController) {
     var showFavoritesOnly by remember { mutableStateOf(false) }
 
     SideEffect {
-        systemUiController.setStatusBarColor(color = primaryOrange)
+        systemUiController.setStatusBarColor(color = primaryBlue)
     }
 
     var selectedFilter by remember { mutableStateOf("All") }
@@ -147,48 +148,53 @@ fun ShopMenuScreen(navController: NavController) {
     // Updated filtering logic to include address filtering
     // In your ShopMenuScreen Composable, replace the existing filteredShops with:
 
-    val filteredShops = remember(shops, favoriteShops, selectedFilter, selectedAddressFilter, searchQuery, showFavoritesOnly) {
-        shopViewModel.getFilteredAndRecommendedShops(
-            shops = shops,
-            favoriteShops = favoriteShops,
-            selectedFilter = selectedFilter,
-            selectedAddressFilter = selectedAddressFilter,
-            searchQuery = searchQuery,
-            showFavoritesOnly = showFavoritesOnly
-        )
-    }
-    // Get available categories from shops that actually have menu items with images
-    val availableCategories = remember(shops) {
-        val allMenuCategories = shops.flatMap { shop ->
-            shop.menuItems.map { it.category }
-        }.distinct()
-
-        val predefinedCategoriesWithImages = listOf(
-            CategoryItem("Biryani", "https://img.freepik.com/free-psd/bowl-biryani-with-chicken-pieces-transparent-background_84443-1312.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Pizza", "https://img.freepik.com/free-psd/top-view-delicious-pizza_23-2151868906.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Burger", "https://img.freepik.com/free-psd/close-up-hamburger-isolated_23-2151604195.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Thali", "https://img.freepik.com/premium-psd/india-watercolor-frame-festive-designs-indian-culture-seasons-food-drink_1305733-8337.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("North Indian", "https://img.freepik.com/premium-psd/indian-thali-thali-indian_396469-32.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("South Indian", "https://img.freepik.com/free-psd/delicious-goldenbrown-masala-dosa-with-vibrant-chutneys-tempting-south-indian-breakfast_84443-34188.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Chinese", "https://img.freepik.com/free-psd/roasted-chicken-with-rosemary-sage_191095-83727.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Paneer", "https://img.freepik.com/premium-psd/stir-fried-tofu-white-plate-top-view-isolated-transparent-background_1232542-71477.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Chicken", "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400"),
-            CategoryItem("Rolls", "https://img.freepik.com/free-psd/new-mexican-flat-enchiladas-isolated-transparent-background_191095-32406.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Momos", "https://img.freepik.com/premium-psd/steamed-bao-buns-wooden-steamer-delicious-asian-food_84443-47747.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Pasta", "https://img.freepik.com/free-psd/delicious-fusilli-pasta-with-tomato-sauce-basil_84443-37005.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Sandwiches", "https://img.freepik.com/premium-psd/sandwich-with-cheese-meat-plate_949261-18970.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Desserts", "https://img.freepik.com/free-psd/delicious-vanilla-ice-cream-with-chocolate-drizzle-shavings_632498-24904.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Beverages", "https://img.freepik.com/free-psd/refreshing-fruit-juices-delightful-citrus-blend-healthy-lifestyle-choice_191095-90526.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
-            CategoryItem("Street Food", "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400"),
-            CategoryItem("Healthy", "https://img.freepik.com/free-psd/healthy-balanced-meal-grilled-chicken-broccoli-cheese-grapes-tomatoes_632498-26043.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740")
-        )
-
-        // Only show categories that exist in the menu items and are in our predefined list
-        val filteredCategories = predefinedCategoriesWithImages.filter { categoryItem ->
-            allMenuCategories.contains(categoryItem.name)
+    // PERFORMANCE FIX: Use derivedStateOf to reduce recompositions
+    val filteredShops by remember {
+        derivedStateOf {
+            shopViewModel.getFilteredAndRecommendedShops(
+                shops = shops,
+                favoriteShops = favoriteShops,
+                selectedFilter = selectedFilter,
+                selectedAddressFilter = selectedAddressFilter,
+                searchQuery = searchQuery,
+                showFavoritesOnly = showFavoritesOnly
+            )
         }
+    }
+    // PERFORMANCE FIX: Use derivedStateOf for expensive category calculation
+    val availableCategories by remember {
+        derivedStateOf {
+            val allMenuCategories = shops.flatMap { shop ->
+                shop.menuItems.map { it.category }
+            }.distinct()
 
-        listOf(CategoryItem("All", "https://img.freepik.com/premium-psd/thanksgiving-dinner-dishes-plate-transparent-background_1324646-10039.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740")) + filteredCategories
+            val predefinedCategoriesWithImages = listOf(
+                CategoryItem("Biryani", "https://img.freepik.com/free-psd/bowl-biryani-with-chicken-pieces-transparent-background_84443-1312.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Pizza", "https://img.freepik.com/free-psd/top-view-delicious-pizza_23-2151868906.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Burger", "https://img.freepik.com/free-psd/close-up-hamburger-isolated_23-2151604195.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Thali", "https://img.freepik.com/premium-psd/india-watercolor-frame-festive-designs-indian-culture-seasons-food-drink_1305733-8337.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("North Indian", "https://img.freepik.com/premium-psd/indian-thali-thali-indian_396469-32.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("South Indian", "https://img.freepik.com/free-psd/delicious-goldenbrown-masala-dosa-with-vibrant-chutneys-tempting-south-indian-breakfast_84443-34188.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Chinese", "https://img.freepik.com/free-psd/roasted-chicken-with-rosemary-sage_191095-83727.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Paneer", "https://img.freepik.com/premium-psd/stir-fried-tofu-white-plate-top-view-isolated-transparent-background_1232542-71477.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Chicken", "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400"),
+                CategoryItem("Rolls", "https://img.freepik.com/free-psd/new-mexican-flat-enchiladas-isolated-transparent-background_191095-32406.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Momos", "https://img.freepik.com/premium-psd/steamed-bao-buns-wooden-steamer-delicious-asian-food_84443-47747.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Pasta", "https://img.freepik.com/free-psd/delicious-fusilli-pasta-with-tomato-sauce-basil_84443-37005.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Sandwiches", "https://img.freepik.com/premium-psd/sandwich-with-cheese-meat-plate_949261-18970.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Desserts", "https://img.freepik.com/free-psd/delicious-vanilla-ice-cream-with-chocolate-drizzle-shavings_632498-24904.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Beverages", "https://img.freepik.com/free-psd/refreshing-fruit-juices-delightful-citrus-blend-healthy-lifestyle-choice_191095-90526.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740"),
+                CategoryItem("Street Food", "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400"),
+                CategoryItem("Healthy", "https://img.freepik.com/free-psd/healthy-balanced-meal-grilled-chicken-broccoli-cheese-grapes-tomatoes_632498-26043.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740")
+            )
+
+            // Only show categories that exist in the menu items and are in our predefined list
+            val filteredCategories = predefinedCategoriesWithImages.filter { categoryItem ->
+                allMenuCategories.contains(categoryItem.name)
+            }
+
+            listOf(CategoryItem("All", "https://img.freepik.com/premium-psd/thanksgiving-dinner-dishes-plate-transparent-background_1324646-10039.jpg?ga=GA1.1.443889646.1730560302&semt=ais_hybrid&w=740")) + filteredCategories
+        }
     }
 
     Scaffold(
@@ -197,7 +203,7 @@ fun ShopMenuScreen(navController: NavController) {
             Column(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(bottom = 50.dp)
+                modifier = Modifier.padding(bottom = 100.dp)
             ) {
                 // Map FAB
                 FloatingActionButton(
@@ -218,7 +224,7 @@ fun ShopMenuScreen(navController: NavController) {
                 // Your existing Favorites FAB
                 ExtendedFloatingActionButton(
                     onClick = { showFavoritesOnly = !showFavoritesOnly },
-                    containerColor = if (showFavoritesOnly) Color.Red else primaryOrange,
+                    containerColor = if (showFavoritesOnly) Color.Red else primaryBlue,
                     contentColor = Color.White
                 ) {
                     Icon(
@@ -243,250 +249,311 @@ fun ShopMenuScreen(navController: NavController) {
                     }
                 }
             }
-        },
-        bottomBar = {
-            AppBottomNavigation(
-                navController = navController,
-                currentRoute = "shops"
-            )
         }
     ) { paddingValues ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            color = backgroundColor
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-
-                // Fixed Top Section with Search and Offers (Non-scrollable)
+        // Box to overlay navigation on content
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Show shimmer while initializing
+            if (shops.isEmpty() && favoriteShops.isEmpty()) {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                        .fillMaxSize()
+                        .padding(paddingValues)
                 ) {
-                    // Search Bar and Offers Button Row
+                    // Search bar placeholder
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        com.divyansh.cueats.common.ShimmerCard(height = 50)
+                    }
+                    
+                    // Category row placeholder
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(horizontal = 28.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        // Custom Search Bar using Box instead of OutlinedTextField
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(50.dp)
-                                .background(
-                                    color = surfaceColor,
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = colorScheme.outline.copy(alpha = 0.5f),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "Search",
-                                    tint = primaryOrange,
-                                    modifier = Modifier.size(20.dp)
-                                )
-
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                BasicTextField(
-                                    value = searchQuery,
-                                    onValueChange = { searchQuery = it },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true,
-                                    textStyle = TextStyle(
-                                        color = onSurfaceColor,
-                                        fontSize = 14.sp
-                                    ),
-                                    decorationBox = { innerTextField ->
-                                        Box(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            contentAlignment = Alignment.CenterStart
-                                        ) {
-                                            if (searchQuery.isEmpty()) {
-                                                Text(
-                                                    text = "Search restaurants or dishes...",
-                                                    color = onSurfaceVariantColor,
-                                                    fontSize = 14.sp
-                                                )
-                                            }
-                                            innerTextField()
-                                        }
-                                    }
-                                )
-                            }
+                        repeat(4) {
+                            com.divyansh.cueats.common.ShimmerCircle(size = 64)
                         }
-
-                        // Simple Offers Button
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .background(
-                                    color = surfaceColor,
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = colorScheme.outline.copy(alpha = 0.5f),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .clickable { showOffersSheet = true },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.offer),
-                                contentDescription = "Offers",
-                                tint = primaryOrange,
-                                modifier = Modifier.size(24.dp)
-                            )
-
-                            // Simple red dot instead of Badge if there are offers
-                            if (offers.isNotEmpty()) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(8.dp)
-                                        .background(Color.Red, CircleShape)
-                                        .align(Alignment.TopEnd)
-                                        .offset(x = (-4).dp, y = 4.dp)
-                                )
-                            }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(24.dp))
+                    
+                    // Shop cards placeholder
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(4) {
+                            com.divyansh.cueats.common.ShimmerShopCard()
                         }
                     }
                 }
-
-                // Unified Scrollable Content (Categories, Address Filters, and Shops)
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 16.dp)
+            } else {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    color = backgroundColor
                 ) {
-                    // Category Row Section
-                    item {
-                        Column {
-                            Spacer(modifier = Modifier.height(4.dp))
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                contentPadding = PaddingValues(horizontal = 28.dp),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                items(availableCategories) { category ->
-                                    CategoryCard(
-                                        category = category,
-                                        isSelected = selectedFilter == category.name,
-                                        primaryColor = primaryOrange,
-                                        surfaceColor = surfaceColor,
-                                        onSurfaceColor = onSurfaceColor,
-                                        onSurfaceVariantColor = onSurfaceVariantColor,
-                                        onClick = { selectedFilter = category.name }
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-                    }
+                    Column(modifier = Modifier.fillMaxSize()) {
 
-                    // Divider Line
-                    item {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = 25.dp),
-                            thickness = 1.dp,
-                            color = colorScheme.outline.copy(alpha = 0.3f)
-                        )
-                    }
-
-                    // Address Filter Row Section
-                    item {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-                            modifier = Modifier.fillMaxWidth()
+                        // Fixed Top Section with Search and Offers (Non-scrollable)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
                         ) {
-                            items(addressFilters) { filter ->
-                                AddressFilterChip(
-                                    text = filter,
-                                    isSelected = selectedAddressFilter == filter,
-                                    onClick = { selectedAddressFilter = filter },
-                                    primaryColor = primaryOrange,
-                                    surfaceColor = surfaceColor,
-                                    onSurfaceColor = onSurfaceColor,
-                                    onSurfaceVariantColor = onSurfaceVariantColor
-                                )
-                            }
-                        }
-                    }
-
-                    // Shop Cards or Empty State
-                    if (filteredShops.isEmpty()) {
-                        item {
-                            Box(
+                            // Search Bar and Offers Button Row
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(300.dp), // Give it some height for better UX
-                                contentAlignment = Alignment.Center
+                                    .padding(horizontal = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
+                                // Custom Search Bar using Box instead of OutlinedTextField
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(50.dp)
+                                        .background(
+                                            color = surfaceColor,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .border(
+                                            width = 1.dp,
+                                            color = colorScheme.outline.copy(alpha = 0.5f),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
                                 ) {
-                                    Text(
-                                        text = when {
-                                            selectedFilter != "All" && selectedAddressFilter != "All" ->
-                                                "No restaurants found with $selectedFilter in $selectedAddressFilter"
-                                            selectedFilter != "All" ->
-                                                "No restaurants found with $selectedFilter"
-                                            selectedAddressFilter != "All" ->
-                                                "No restaurants found in $selectedAddressFilter"
-                                            else -> "No restaurants found"
-                                        },
-                                        color = primaryColor,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        textAlign = TextAlign.Center
-                                    )
-                                    if (selectedFilter != "All" || selectedAddressFilter != "All") {
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        TextButton(
-                                            onClick = {
-                                                selectedFilter = "All"
-                                                selectedAddressFilter = "All"
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(horizontal = 12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Search,
+                                            contentDescription = "Search",
+                                            tint = primaryBlue,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+
+                                        Spacer(modifier = Modifier.width(8.dp))
+
+                                        BasicTextField(
+                                            value = searchQuery,
+                                            onValueChange = { searchQuery = it },
+                                            modifier = Modifier.fillMaxWidth(),
+                                            singleLine = true,
+                                            textStyle = TextStyle(
+                                                color = onSurfaceColor,
+                                                fontSize = 14.sp
+                                            ),
+                                            decorationBox = { innerTextField ->
+                                                Box(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    contentAlignment = Alignment.CenterStart
+                                                ) {
+                                                    if (searchQuery.isEmpty()) {
+                                                        Text(
+                                                            text = "Search restaurants or dishes...",
+                                                            color = onSurfaceVariantColor,
+                                                            fontSize = 14.sp
+                                                        )
+                                                    }
+                                                    innerTextField()
+                                                }
                                             }
-                                        ) {
-                                            Text(
-                                                "Show all restaurants",
-                                                color = primaryOrange
+                                        )
+                                    }
+                                }
+
+                                // Simple Offers Button
+                                Box(
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .background(
+                                            color = surfaceColor,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .border(
+                                            width = 1.dp,
+                                            color = colorScheme.outline.copy(alpha = 0.5f),
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .clickable { showOffersSheet = true },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.offer),
+                                        contentDescription = "Offers",
+                                        tint = primaryBlue,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+
+                                    // Simple red dot instead of Badge if there are offers
+                                    if (offers.isNotEmpty()) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(8.dp)
+                                                .background(Color.Red, CircleShape)
+                                                .align(Alignment.TopEnd)
+                                                .offset(x = (-4).dp, y = 4.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        // Unified Scrollable Content (Categories, Address Filters, and Shops)
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = 100.dp) // Extra padding for floating nav
+                        ) {
+                            // Category Row Section
+                            item {
+                                Column {
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    LazyRow(
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                        contentPadding = PaddingValues(horizontal = 28.dp),
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        items(
+                                            items = availableCategories,
+                                            key = { it.name } // Add key for better performance
+                                        ) { category ->
+                                            CategoryCard(
+                                                category = category,
+                                                isSelected = selectedFilter == category.name,
+                                                primaryColor = primaryBlue,
+                                                surfaceColor = surfaceColor,
+                                                onSurfaceColor = onSurfaceColor,
+                                                onSurfaceVariantColor = onSurfaceVariantColor,
+                                                onClick = { selectedFilter = category.name }
                                             )
                                         }
                                     }
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                }
+                            }
+
+                            // Divider Line
+                            item {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(horizontal = 25.dp),
+                                    thickness = 1.dp,
+                                    color = colorScheme.outline.copy(alpha = 0.3f)
+                                )
+                            }
+
+                            // Address Filter Row Section
+                            item {
+                                LazyRow(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    items(
+                                        items = addressFilters,
+                                        key = { it } // Add key for better performance
+                                    ) { filter ->
+                                        AddressFilterChip(
+                                            text = filter,
+                                            isSelected = selectedAddressFilter == filter,
+                                            onClick = { selectedAddressFilter = filter },
+                                            primaryColor = primaryBlue,
+                                            surfaceColor = surfaceColor,
+                                            onSurfaceColor = onSurfaceColor,
+                                            onSurfaceVariantColor = onSurfaceVariantColor
+                                        )
+                                    }
+                                }
+                            }
+
+                            // Shop Cards or Empty State
+                            if (filteredShops.isEmpty()) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(300.dp), // Give it some height for better UX
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Text(
+                                                text = when {
+                                                    selectedFilter != "All" && selectedAddressFilter != "All" ->
+                                                        "No restaurants found with $selectedFilter in $selectedAddressFilter"
+                                                    selectedFilter != "All" ->
+                                                        "No restaurants found with $selectedFilter"
+                                                    selectedAddressFilter != "All" ->
+                                                        "No restaurants found in $selectedAddressFilter"
+                                                    else -> "No restaurants found"
+                                                },
+                                                color = primaryColor,
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                textAlign = TextAlign.Center
+                                            )
+                                            if (selectedFilter != "All" || selectedAddressFilter != "All") {
+                                                Spacer(modifier = Modifier.height(8.dp))
+                                                TextButton(
+                                                    onClick = {
+                                                        selectedFilter = "All"
+                                                        selectedAddressFilter = "All"
+                                                    }
+                                                ) {
+                                                    Text(
+                                                        "Show all restaurants",
+                                                        color = primaryBlue
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Shop Cards
+                                items(
+                                    items = filteredShops,
+                                    key = { it.id } // Add key for better performance
+                                ) { shop ->
+                                    EnhancedShopCard(
+                                        shop = shop,
+                                        navController = navController,
+                                        surfaceColor = surfaceColor,
+                                        primaryColor = primaryColor,
+                                        onSurfaceColor = onSurfaceColor,
+                                        onSurfaceVariantColor = onSurfaceVariantColor,
+                                        favoriteViewModel = favoriteViewModel // ADD THIS LINE
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
                                 }
                             }
                         }
-                    } else {
-                        // Shop Cards
-                        items(filteredShops) { shop ->
-                            EnhancedShopCard(
-                                shop = shop,
-                                navController = navController,
-                                surfaceColor = surfaceColor,
-                                primaryColor = primaryColor,
-                                onSurfaceColor = onSurfaceColor,
-                                onSurfaceVariantColor = onSurfaceVariantColor,
-                                favoriteViewModel = favoriteViewModel // ADD THIS LINE
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
                     }
                 }
+            }
+            
+            // Floating navigation overlay (iOS style) - Must be last in Box to be on top
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+            ) {
+                AppBottomNavigation(
+                    navController = navController,
+                    currentRoute = "shops"
+                )
             }
         }
     }
@@ -520,7 +587,7 @@ fun AddressFilterChip(
     val backgroundColor = if (isSelected) primaryColor else surfaceColor
     val textColor = if (isSelected) Color.White else onSurfaceColor
     val borderColor = if (isSelected) primaryColor else onSurfaceVariantColor.copy(alpha = 0.3f)
-    val primaryOrange = Color(0xFFFF6B01)
+    val primaryBlue = Color(0xFF42A5F5)
     Box(
         modifier = Modifier
             .background(
@@ -753,6 +820,8 @@ fun OfferCard(
         }
     }
 }
+
+
 @Composable
 fun CategoryCard(
     category: CategoryItem,
@@ -840,7 +909,7 @@ fun EnhancedShopCard(
 
 
 
-    val primaryOrange = Color(0xFFE33411)
+    val primaryBlue = Color(0xFF42A5F5)
     val deliveryGreen = Color(0xFF4CAF50)
     val callBlue = Color(0xFF2196F3)
     val whatsappGreen = Color(0xFF25D366)
@@ -877,7 +946,7 @@ fun EnhancedShopCard(
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(shop.imageUrl)
-                            .crossfade(true)
+                            .crossfade(false)
                             .listener(
                                 onStart = {
                                     isImageLoading = true
@@ -997,22 +1066,11 @@ fun EnhancedShopCard(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    val scale by animateFloatAsState(
-                        targetValue = if (isFavorite) 1.2f else 1.0f,
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
-                        ),
-                        label = "favorite_scale"
-                    )
-
                     Icon(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                        tint = if (isFavorite) primaryOrange else Color.White,
-                        modifier = Modifier
-                            .size(22.dp)
-                            .scale(scale)
+                        tint = if (isFavorite) primaryBlue else Color.White,
+                        modifier = Modifier.size(22.dp)
                     )
                 }
             }
@@ -1065,7 +1123,7 @@ fun EnhancedShopCard(
                     Icon(
                         imageVector = Icons.Default.LocationOn,
                         contentDescription = null,
-                        tint = primaryOrange,
+                        tint = primaryBlue,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -1084,6 +1142,8 @@ fun EnhancedShopCard(
 
 
 }
+
+
 @Composable
 fun ImprovedShimmerOverlay(
     modifier: Modifier = Modifier
@@ -1133,6 +1193,8 @@ fun ImprovedShimmerOverlay(
             )
     )
 }
+
+
 @Composable
 private fun ContactActions(
     contactNumber: String,
@@ -1224,35 +1286,28 @@ fun ShopMenuLoadingScreen(
     shopName: String,
     shopId: String
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
 
     val ratingViewModel: RatingViewModel = viewModel()
     val shopRating = ratingViewModel.getShopRating(shopId)
     var showRatingDialog by remember { mutableStateOf(false) }
 
     // Theme-aware oranges
-    val primaryOrange = if (isDarkTheme) Color(0xFFFF8E4A) else Color(0xFFFF6B01)
-    val secondaryOrange = if (isDarkTheme) Color(0xFFFFA366) else Color(0xFFFF8533)
+    val primaryBlue = Color(0xFF42A5F5)
+    val secondaryOrange = Color(0xFFFF8533)
 
     // Background adapts to theme
-    val backgroundColors = if (isDarkTheme) {
+    val backgroundColors =
         listOf(
-            primaryOrange.copy(alpha = 0.13f),
-            Color(0xFF232323),
-            secondaryOrange.copy(alpha = 0.08f)
-        )
-    } else {
-        listOf(
-            primaryOrange.copy(alpha = 0.1f),
+            primaryBlue.copy(alpha = 0.1f),
             Color.White,
             secondaryOrange.copy(alpha = 0.05f)
         )
-    }
+
 
     // Text color adapts to theme
-    val textColor = if (isDarkTheme) Color(0xFFEFEFEF) else Color(0xFF2C2C2C)
-    val subtitleColor = if (isDarkTheme) Color(0xFFB2B2B2) else Color(0xFF555555)
-    val cardColor = if (isDarkTheme) Color(0xFF29292B) else Color.White
+    val textColor =  Color(0xFF2C2C2C)
+    val subtitleColor =  Color(0xFF555555)
+    val cardColor =Color.White
 
     val foodQuotes = listOf(
         "Nourish your dreams, one bite at a time. ✨🍴",
@@ -1371,7 +1426,7 @@ fun ShopMenuLoadingScreen(
                         modifier = Modifier
                             .size(12.dp)
                             .scale(dotScale)
-                            .background(primaryOrange, CircleShape)
+                            .background(primaryBlue, CircleShape)
                     )
                 }
             }
@@ -1389,9 +1444,8 @@ fun ShopMenuDetailScreen(
 ) {
     val shopViewModel: ShopViewModel = viewModel()
     val shop = shopViewModel.getShopById(shopId)
-    val isDarkTheme = isSystemInDarkTheme()
     val primaryGreen = Color(0xFF47B44C)
-    val primaryOrange = Color(0xFFFF6B01)
+    val primaryBlue = Color(0xFF42A5F5)
     val context = LocalContext.current
 
     // Add loading state
@@ -1420,12 +1474,12 @@ fun ShopMenuDetailScreen(
     }
 
     // Improved color scheme for better dark theme support
-    val backgroundColor = if (isDarkTheme) Color(0xFF121212) else Color(0xFFF5F5F5)
-    val surfaceColor = if (isDarkTheme) Color(0xFF1E1E1E) else Color.White
-    val textPrimaryColor = if (isDarkTheme) Color(0xFFE0E0E0) else Color(0xFF1A2C38)
-    val textSecondaryColor = if (isDarkTheme) Color(0xFFB0B0B0) else Color(0xFF57727C)
-    val cardBgColor = if (isDarkTheme) Color(0xFF2A2A2A) else Color.White
-    val borderColor = if (isDarkTheme) Color(0xFF404040) else Color(0xFFE0E0E0)
+    val backgroundColor = Color(0xFFF5F5F5)
+    val surfaceColor =  Color.White
+    val textPrimaryColor = Color(0xFF1A2C38)
+    val textSecondaryColor =  Color(0xFF57727C)
+    val cardBgColor =Color.White
+    val borderColor =  Color(0xFFE0E0E0)
 
     var selectedCategory by remember { mutableStateOf("All") }
     var searchQuery by remember { mutableStateOf("") }
@@ -1484,7 +1538,7 @@ fun ShopMenuDetailScreen(
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = primaryOrange,
+                        containerColor = primaryBlue,
                         titleContentColor = Color.White,
                         navigationIconContentColor = Color.White
                     )
@@ -1511,7 +1565,7 @@ fun ShopMenuDetailScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = { navController.navigateUp() },
-                        colors = ButtonDefaults.buttonColors(containerColor = primaryOrange)
+                        colors = ButtonDefaults.buttonColors(containerColor = primaryBlue)
                     ) {
                         Text("Go Back", color = Color.White)
                     }
@@ -1577,7 +1631,7 @@ fun ShopMenuDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = primaryOrange,
+                    containerColor = primaryBlue,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White
                 )
@@ -1586,7 +1640,7 @@ fun ShopMenuDetailScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showFilterSheet = true },
-                containerColor = primaryOrange,
+                containerColor = primaryBlue,
                 contentColor = Color.White,
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -1652,7 +1706,7 @@ fun ShopMenuDetailScreen(
                             Text(
                                 text = "Report",
                                 fontSize = 12.sp,
-                                color = primaryOrange,
+                                color = primaryBlue,
                                 fontWeight = FontWeight.Medium
                             )
                         }
@@ -1694,11 +1748,11 @@ fun ShopMenuDetailScreen(
                     .padding(top = 4.dp, bottom = 16.dp), // Reduced top padding from 16dp to 4dp
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = primaryOrange,
+                    focusedBorderColor = primaryBlue,
                     unfocusedBorderColor = borderColor,
                     focusedTextColor = textPrimaryColor,
                     unfocusedTextColor = textPrimaryColor,
-                    cursorColor = primaryOrange,
+                    cursorColor = primaryBlue,
                     focusedContainerColor = surfaceColor,
                     unfocusedContainerColor = surfaceColor
                 )
@@ -1715,10 +1769,10 @@ fun ShopMenuDetailScreen(
                         category = category,
                         isSelected = selectedCategory == category,
                         onClick = { selectedCategory = category },
-                        primaryOrange = primaryOrange,
+                        primaryBlue = primaryBlue,
                         textPrimaryColor = textPrimaryColor,
                         textSecondaryColor = textSecondaryColor,
-                        isDarkTheme = isDarkTheme
+
                     )
                 }
             }
@@ -1768,7 +1822,7 @@ fun ShopMenuDetailScreen(
                                     },
                                     textPrimaryColor = textPrimaryColor,
                                     textSecondaryColor = textSecondaryColor,
-                                    primaryOrange = primaryOrange
+                                    primaryBlue = primaryBlue
                                 )
                             }
                         }
@@ -1778,8 +1832,7 @@ fun ShopMenuDetailScreen(
                             items(items) { menuItem ->
                                 MenuItemCard(
                                     menuItem = menuItem,
-                                    isDarkTheme = isDarkTheme,
-                                    primaryOrange = primaryOrange,
+                                    primaryBlue = primaryBlue,
                                     cardBgColor = cardBgColor,
                                     textPrimaryColor = textPrimaryColor,
                                     textSecondaryColor = textSecondaryColor,
@@ -1854,7 +1907,7 @@ fun ShopMenuDetailScreen(
                                     text = category,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = if (selectedCategory == category) {
-                                        primaryOrange
+                                        primaryBlue
                                     } else {
                                         textPrimaryColor
                                     },
@@ -1868,7 +1921,7 @@ fun ShopMenuDetailScreen(
                                     text = count.toString(),
                                     style = MaterialTheme.typography.titleMedium,
                                     color = if (selectedCategory == category) {
-                                        primaryOrange
+                                        primaryBlue
                                     } else {
                                         textPrimaryColor
                                     },
@@ -1900,6 +1953,9 @@ fun ShopMenuDetailScreen(
         }
     }
 }
+
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ShopReportDialog(
@@ -1922,15 +1978,15 @@ private fun ShopReportDialog(
     )
 
     var showTypeDropdown by remember { mutableStateOf(false) }
-    val isDarkTheme = isSystemInDarkTheme()
+
 
     // Enhanced color scheme with better contrast
-    val dialogBackgroundColor = if (isDarkTheme) Color(0xFF1E1E1E) else Color.White
-    val textPrimaryColor = if (isDarkTheme) Color(0xFFFFFFFF) else Color(0xFF212121)
-    val textSecondaryColor = if (isDarkTheme) Color(0xFFB0B0B0) else Color(0xFF757575)
-    val primaryOrange = Color(0xFFFF6B01)
-    val surfaceColor = if (isDarkTheme) Color(0xFF2A2A2A) else Color(0xFFFAFAFA)
-    val borderColor = if (isDarkTheme) Color(0xFF3A3A3A) else Color(0xFFE0E0E0)
+    val dialogBackgroundColor = Color.White
+    val textPrimaryColor = Color(0xFF212121)
+    val textSecondaryColor =Color(0xFF757575)
+    val primaryBlue = Color(0xFF42A5F5)
+    val surfaceColor = Color(0xFFFAFAFA)
+    val borderColor = Color(0xFFE0E0E0)
     val errorColor = Color(0xFFFF4444)
 
     Dialog(
@@ -1965,13 +2021,13 @@ private fun ShopReportDialog(
                                 modifier = Modifier
                                     .size(100.dp)
                                     .background(
-                                        primaryOrange.copy(alpha = 0.1f),
+                                        primaryBlue.copy(alpha = 0.1f),
                                         CircleShape
                                     ),
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator(
-                                    color = primaryOrange,
+                                    color = primaryBlue,
                                     modifier = Modifier.size(48.dp),
                                     strokeWidth = 4.dp
                                 )
@@ -2006,7 +2062,7 @@ private fun ShopReportDialog(
                         // Improved Header with better spacing
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
-                            color = primaryOrange.copy(alpha = 0.05f)
+                            color = primaryBlue.copy(alpha = 0.05f)
                         ) {
                             Row(
                                 modifier = Modifier
@@ -2023,7 +2079,7 @@ private fun ShopReportDialog(
                                         modifier = Modifier
                                             .size(40.dp)
                                             .background(
-                                                primaryOrange.copy(alpha = 0.15f),
+                                                primaryBlue.copy(alpha = 0.15f),
                                                 CircleShape
                                             ),
                                         contentAlignment = Alignment.Center
@@ -2031,7 +2087,7 @@ private fun ShopReportDialog(
                                         Icon(
                                             imageVector = Icons.Default.Report,
                                             contentDescription = null,
-                                            tint = primaryOrange,
+                                            tint = primaryBlue,
                                             modifier = Modifier.size(20.dp)
                                         )
                                     }
@@ -2049,7 +2105,7 @@ private fun ShopReportDialog(
                                         Text(
                                             text = shopName,
                                             fontSize = 13.sp,
-                                            color = primaryOrange,
+                                            color = primaryBlue,
                                             fontWeight = FontWeight.SemiBold,
                                             modifier = Modifier.padding(top = 1.dp),
                                             maxLines = 1,
@@ -2106,11 +2162,11 @@ private fun ShopReportDialog(
                                                 .fillMaxWidth(),
                                             shape = RoundedCornerShape(16.dp),
                                             colors = OutlinedTextFieldDefaults.colors(
-                                                focusedBorderColor = primaryOrange,
+                                                focusedBorderColor = primaryBlue,
                                                 unfocusedBorderColor = borderColor,
                                                 focusedTextColor = textPrimaryColor,
                                                 unfocusedTextColor = textPrimaryColor,
-                                                cursorColor = primaryOrange,
+                                                cursorColor = primaryBlue,
                                                 focusedContainerColor = surfaceColor,
                                                 unfocusedContainerColor = surfaceColor
                                             ),
@@ -2122,14 +2178,14 @@ private fun ShopReportDialog(
                                                 Icon(
                                                     imageVector = if (showTypeDropdown) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                                                     contentDescription = null,
-                                                    tint = primaryOrange
+                                                    tint = primaryBlue
                                                 )
                                             },
                                             leadingIcon = {
                                                 Icon(
                                                     imageVector = Icons.Default.Category,
                                                     contentDescription = null,
-                                                    tint = primaryOrange,
+                                                    tint = primaryBlue,
                                                     modifier = Modifier.size(20.dp)
                                                 )
                                             }
@@ -2228,13 +2284,13 @@ private fun ShopReportDialog(
                                         singleLine = true,
                                         shape = RoundedCornerShape(16.dp),
                                         colors = OutlinedTextFieldDefaults.colors(
-                                            focusedBorderColor = primaryOrange,
-                                            unfocusedBorderColor = if (name.isEmpty()) borderColor else primaryOrange.copy(
+                                            focusedBorderColor = primaryBlue,
+                                            unfocusedBorderColor = if (name.isEmpty()) borderColor else primaryBlue.copy(
                                                 alpha = 0.5f
                                             ),
                                             focusedTextColor = textPrimaryColor,
                                             unfocusedTextColor = textPrimaryColor,
-                                            cursorColor = primaryOrange,
+                                            cursorColor = primaryBlue,
                                             focusedContainerColor = surfaceColor,
                                             unfocusedContainerColor = surfaceColor
                                         ),
@@ -2246,7 +2302,7 @@ private fun ShopReportDialog(
                                             Icon(
                                                 imageVector = Icons.Default.Person,
                                                 contentDescription = null,
-                                                tint = if (name.isNotEmpty()) primaryOrange else textSecondaryColor,
+                                                tint = if (name.isNotEmpty()) primaryBlue else textSecondaryColor,
                                                 modifier = Modifier.size(20.dp)
                                             )
                                         },
@@ -2286,13 +2342,13 @@ private fun ShopReportDialog(
                                         singleLine = true,
                                         shape = RoundedCornerShape(16.dp),
                                         colors = OutlinedTextFieldDefaults.colors(
-                                            focusedBorderColor = primaryOrange,
-                                            unfocusedBorderColor = if (email.isEmpty()) borderColor else primaryOrange.copy(
+                                            focusedBorderColor = primaryBlue,
+                                            unfocusedBorderColor = if (email.isEmpty()) borderColor else primaryBlue.copy(
                                                 alpha = 0.5f
                                             ),
                                             focusedTextColor = textPrimaryColor,
                                             unfocusedTextColor = textPrimaryColor,
-                                            cursorColor = primaryOrange,
+                                            cursorColor = primaryBlue,
                                             focusedContainerColor = surfaceColor,
                                             unfocusedContainerColor = surfaceColor
                                         ),
@@ -2304,7 +2360,7 @@ private fun ShopReportDialog(
                                             Icon(
                                                 imageVector = Icons.Default.Email,
                                                 contentDescription = null,
-                                                tint = if (email.isNotEmpty()) primaryOrange else textSecondaryColor,
+                                                tint = if (email.isNotEmpty()) primaryBlue else textSecondaryColor,
                                                 modifier = Modifier.size(20.dp)
                                             )
                                         },
@@ -2356,13 +2412,13 @@ private fun ShopReportDialog(
                                         maxLines = 5,
                                         shape = RoundedCornerShape(16.dp),
                                         colors = OutlinedTextFieldDefaults.colors(
-                                            focusedBorderColor = primaryOrange,
-                                            unfocusedBorderColor = if (message.isEmpty()) borderColor else primaryOrange.copy(
+                                            focusedBorderColor = primaryBlue,
+                                            unfocusedBorderColor = if (message.isEmpty()) borderColor else primaryBlue.copy(
                                                 alpha = 0.5f
                                             ),
                                             focusedTextColor = textPrimaryColor,
                                             unfocusedTextColor = textPrimaryColor,
-                                            cursorColor = primaryOrange,
+                                            cursorColor = primaryBlue,
                                             focusedContainerColor = surfaceColor,
                                             unfocusedContainerColor = surfaceColor
                                         ),
@@ -2385,10 +2441,10 @@ private fun ShopReportDialog(
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = CardDefaults.cardColors(
-                                        containerColor = primaryOrange.copy(alpha = 0.08f)
+                                        containerColor = primaryBlue.copy(alpha = 0.08f)
                                     ),
                                     shape = RoundedCornerShape(12.dp),
-                                    border = BorderStroke(1.dp, primaryOrange.copy(alpha = 0.2f))
+                                    border = BorderStroke(1.dp, primaryBlue.copy(alpha = 0.2f))
                                 ) {
                                     Row(
                                         modifier = Modifier
@@ -2399,14 +2455,14 @@ private fun ShopReportDialog(
                                         Icon(
                                             imageVector = Icons.Default.Info,
                                             contentDescription = null,
-                                            tint = primaryOrange,
+                                            tint = primaryBlue,
                                             modifier = Modifier.size(18.dp)
                                         )
                                         Spacer(modifier = Modifier.width(12.dp))
                                         Text(
                                             text = "Your feedback helps us maintain accurate information for everyone.",
                                             fontSize = 12.sp,
-                                            color = primaryOrange,
+                                            color = primaryBlue,
                                             lineHeight = 16.sp,
                                             fontWeight = FontWeight.Medium,
                                             modifier = Modifier.fillMaxWidth()
@@ -2465,7 +2521,7 @@ private fun ShopReportDialog(
                                         enabled = name.isNotBlank() && message.isNotBlank(),
                                         shape = RoundedCornerShape(12.dp),
                                         colors = ButtonDefaults.buttonColors(
-                                            containerColor = primaryOrange,
+                                            containerColor = primaryBlue,
                                             disabledContainerColor = textSecondaryColor.copy(alpha = 0.3f),
                                             contentColor = Color.White,
                                             disabledContentColor = Color.White.copy(alpha = 0.6f)
@@ -2515,16 +2571,14 @@ fun CategoryChip(
     category: String,
     isSelected: Boolean,
     onClick: () -> Unit,
-    primaryOrange: Color,
+    primaryBlue: Color,
     textPrimaryColor: Color,
     textSecondaryColor: Color,
-    isDarkTheme: Boolean
+
 ) {
-    val backgroundColor = when {
-        isSelected -> primaryOrange
-        isDarkTheme -> Color(0xFF2A2A2A)
-        else -> Color(0xFFE0E0E0)
-    }
+    val backgroundColor = if (isSelected) primaryBlue else Color(0xFFE0E0E0)
+
+
 
     val textColor = when {
         isSelected -> Color.White
@@ -2557,7 +2611,7 @@ fun CategoryHeader(
     onToggle: () -> Unit,
     textPrimaryColor: Color,
     textSecondaryColor: Color,
-    primaryOrange: Color
+    primaryBlue: Color
 ) {
     Row(
         modifier = Modifier
@@ -2587,8 +2641,7 @@ fun CategoryHeader(
 @Composable
 fun MenuItemCard(
     menuItem: MenuItem,
-    isDarkTheme: Boolean,
-    primaryOrange: Color,
+    primaryBlue: Color,
     cardBgColor: Color,
     textPrimaryColor: Color,
     textSecondaryColor: Color,
@@ -2600,7 +2653,7 @@ fun MenuItemCard(
             .clip(RoundedCornerShape(12.dp)),
         colors = CardDefaults.cardColors(containerColor = cardBgColor),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isDarkTheme) 1.dp else 0.5.dp
+            defaultElevation =  0.5.dp
         )
     ) {
         Row(
@@ -2640,7 +2693,7 @@ fun MenuItemCard(
                         modifier = Modifier
                             .size(6.dp)
                             .background(
-                                primaryOrange,
+                                primaryBlue,
                                 CircleShape
                             )
                     )
@@ -2671,7 +2724,7 @@ fun MenuItemCard(
                         text = "₹${menuItem.price.toInt()}",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
-                            color = primaryOrange
+                            color = primaryBlue
                         )
                     )
                 }
@@ -2692,6 +2745,8 @@ fun MenuItemCard(
         }
     }
 }
+
+
 // Data classes remain the same
 data class Shop(
     val id: String,

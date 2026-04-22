@@ -56,6 +56,7 @@ class AuthRepository {
                 "uid" to user.uid,
                 "displayName" to name,
                 "email" to email,
+                "role" to "user", // Default role is user
                 "createdAt" to System.currentTimeMillis()
             )
 
@@ -104,6 +105,7 @@ class AuthRepository {
                         "uid" to user.uid,
                         "displayName" to (user.displayName ?: "User"),
                         "email" to user.email,
+                        "role" to "user", // Default role is user
                         "createdAt" to System.currentTimeMillis(),
                         "provider" to "google"
                     )
@@ -143,6 +145,19 @@ class AuthRepository {
         }
     }
 
+    suspend fun getUserRole(userId: String): String {
+        return try {
+            Log.d(TAG, "Fetching user role for: $userId")
+            val userDoc = firestore.collection("users").document(userId).get().await()
+            val role = userDoc.getString("role") ?: "user"
+            Log.d(TAG, "User role: $role")
+            role
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to fetch user role, defaulting to 'user'", e)
+            "user" // Default to user role if fetch fails
+        }
+    }
+
     fun signOut() {
         Log.d(TAG, "Signing out user")
         auth.signOut()
@@ -150,15 +165,34 @@ class AuthRepository {
 
     fun getGoogleSignInClient(context: Context): GoogleSignInClient {
         Log.d(TAG, "Creating GoogleSignInClient")
+        Log.d(TAG, "Package name: ${context.packageName}")
+        
+        // Use the hardcoded Web Client ID (verified from google-services.json)
+        val webClientId = WEB_CLIENT_ID
+        Log.d(TAG, "Using Web Client ID: $webClientId")
+        
+        try {
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(webClientId)
+                .requestEmail()
+                .requestProfile()
+                .build()
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(WEB_CLIENT_ID) // Make sure this is your correct Web Client ID
-            .requestEmail()
-            .requestProfile()
-            .build()
-
-        val client = GoogleSignIn.getClient(context, gso)
-        Log.d(TAG, "GoogleSignInClient created successfully")
-        return client
+            val client = GoogleSignIn.getClient(context, gso)
+            Log.d(TAG, "GoogleSignInClient created successfully")
+            
+            // Check if there's already a signed-in account
+            val account = GoogleSignIn.getLastSignedInAccount(context)
+            if (account != null) {
+                Log.d(TAG, "Found existing signed-in account: ${account.email}")
+            } else {
+                Log.d(TAG, "No existing signed-in account found")
+            }
+            
+            return client
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to create GoogleSignInClient", e)
+            throw e
+        }
     }
 }

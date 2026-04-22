@@ -19,6 +19,7 @@ class UserPreferences(private val context: Context) {
         val USER_NAME = stringPreferencesKey("user_name")
         val UNIVERSITY_ID = stringPreferencesKey("university_id")
         val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+        val INTERESTED_EVENT_IDS = stringPreferencesKey("interested_event_ids")
     }
 
     val isHosteller: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -35,6 +36,10 @@ class UserPreferences(private val context: Context) {
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[IS_LOGGED_IN] ?: true
+    }
+
+    val interestedEventIds: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[INTERESTED_EVENT_IDS]?.split(",")?.filter { it.isNotEmpty() }?.toSet() ?: emptySet()
     }
 
     suspend fun setHostellerStatus(isHosteller: Boolean) {
@@ -58,6 +63,28 @@ class UserPreferences(private val context: Context) {
     suspend fun setLoggedIn(isLoggedIn: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[IS_LOGGED_IN] = isLoggedIn
+        }
+    }
+
+    suspend fun addInterestedEvent(eventId: String) {
+        context.dataStore.edit { preferences ->
+            val currentIds = preferences[INTERESTED_EVENT_IDS]?.split(",")?.filter { it.isNotEmpty() }?.toMutableSet() ?: mutableSetOf()
+            currentIds.add(eventId)
+            preferences[INTERESTED_EVENT_IDS] = currentIds.joinToString(",")
+        }
+    }
+
+    suspend fun removeInterestedEvent(eventId: String) {
+        context.dataStore.edit { preferences ->
+            val currentIds = preferences[INTERESTED_EVENT_IDS]?.split(",")?.filter { it.isNotEmpty() }?.toMutableSet() ?: mutableSetOf()
+            currentIds.remove(eventId)
+            preferences[INTERESTED_EVENT_IDS] = currentIds.joinToString(",")
+        }
+    }
+
+    suspend fun clearInterestedEvents() {
+        context.dataStore.edit { preferences ->
+            preferences[INTERESTED_EVENT_IDS] = ""
         }
     }
 
