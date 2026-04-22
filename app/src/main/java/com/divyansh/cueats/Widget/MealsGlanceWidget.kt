@@ -434,7 +434,7 @@ fun parseCachedMeals(cachedData: String): List<WidgetMealData> {
 }
 
 fun fetchTodayMealsData(context: Context) {
-    val database = FirebaseDatabase.getInstance("https://cu-eats-37fa0-default-rtdb.firebaseio.com/")
+    val database = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_DATABASE_URL)
     val mealsRef = database.reference.child("meals")
 
     val todayDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Calendar.getInstance().time)

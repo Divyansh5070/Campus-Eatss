@@ -33,6 +33,10 @@ android {
         // Inject secrets into BuildConfig (never appear in committed source)
         buildConfigField("String", "ONESIGNAL_APP_ID",
             "\"${secrets.getProperty("ONESIGNAL_APP_ID", "")}\"")
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID",
+            "\"${secrets.getProperty("GOOGLE_WEB_CLIENT_ID", "")}\"")
+        buildConfigField("String", "FIREBASE_DATABASE_URL",
+            "\"${secrets.getProperty("FIREBASE_DATABASE_URL", "")}\"")
     }
     
     // Enable 16 KB page size support for Android 15+ devices

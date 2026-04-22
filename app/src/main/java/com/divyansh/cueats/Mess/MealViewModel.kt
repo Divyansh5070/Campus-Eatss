@@ -179,7 +179,7 @@ class MealViewModel(private val context: Context) : ViewModel() {
     private fun fetchDailyMenuFromServer() {
         _isLoading.value = true
         databaseReference =
-            FirebaseDatabase.getInstance("https://cu-eats-37fa0-default-rtdb.firebaseio.com/")
+            FirebaseDatabase.getInstance(BuildConfig.FIREBASE_DATABASE_URL)
                 .reference.child("meals")
 
         databaseListener = object : ValueEventListener {

@@ -18,8 +18,9 @@ class AuthRepository {
 
     companion object {
         private const val TAG = "AuthRepository"
-        // Replace this with your actual Web Client ID from Firebase Console
-        private const val WEB_CLIENT_ID = "459758248699-9qvbqb1qfd3pgt9c7586l5gl0r42lq32.apps.googleusercontent.com"
+        // Web Client ID is loaded from BuildConfig (set via secrets.properties — never committed)
+        // See secrets.properties.example for the required key: GOOGLE_WEB_CLIENT_ID
+        private val WEB_CLIENT_ID = BuildConfig.GOOGLE_WEB_CLIENT_ID
     }
 
     val currentUser: FirebaseUser? get() = auth.currentUser
