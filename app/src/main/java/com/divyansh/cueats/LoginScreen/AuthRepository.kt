@@ -1,5 +1,6 @@
 package com.divyansh.cueats.LoginScreen
 
+import com.divyansh.cueats.BuildConfig
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -11,6 +12,7 @@ import kotlinx.coroutines.tasks.await
 import android.content.Context
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
+import com.google.firebase.firestore.BuildConfig
 
 class AuthRepository {
     private val auth = FirebaseAuth.getInstance()

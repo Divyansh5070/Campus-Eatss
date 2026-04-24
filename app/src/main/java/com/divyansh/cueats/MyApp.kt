@@ -1,6 +1,7 @@
 package com.divyansh.cueats
 
 import android.app.Application
+import com.divyansh.cueats.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

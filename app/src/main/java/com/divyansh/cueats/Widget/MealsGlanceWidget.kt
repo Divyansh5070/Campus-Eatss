@@ -44,6 +44,7 @@ import androidx.glance.layout.ContentScale
 
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
+import com.divyansh.cueats.BuildConfig
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
