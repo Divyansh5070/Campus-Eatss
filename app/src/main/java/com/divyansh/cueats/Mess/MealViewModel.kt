@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.divyansh.cueats.BuildConfig
 import com.divyansh.cueats.widget.MealsWidgetUpdater
 import com.google.common.reflect.TypeToken
 import com.google.firebase.auth.FirebaseAuth
@@ -180,7 +179,7 @@ class MealViewModel(private val context: Context) : ViewModel() {
     private fun fetchDailyMenuFromServer() {
         _isLoading.value = true
         databaseReference =
-            FirebaseDatabase.getInstance(BuildConfig.FIREBASE_DATABASE_URL)
+            FirebaseDatabase.getInstance(com.divyansh.cueats.BuildConfig.FIREBASE_DATABASE_URL)
                 .reference.child("meals")
 
         databaseListener = object : ValueEventListener {

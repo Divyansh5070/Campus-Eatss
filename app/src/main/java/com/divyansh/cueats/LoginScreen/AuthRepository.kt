@@ -1,6 +1,5 @@
 package com.divyansh.cueats.LoginScreen
 
-import com.divyansh.cueats.BuildConfig
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -12,7 +11,6 @@ import kotlinx.coroutines.tasks.await
 import android.content.Context
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
-import com.google.firebase.firestore.BuildConfig
 
 class AuthRepository {
     private val auth = FirebaseAuth.getInstance()
@@ -22,7 +20,7 @@ class AuthRepository {
         private const val TAG = "AuthRepository"
         // Web Client ID is loaded from BuildConfig (set via secrets.properties — never committed)
         // See secrets.properties.example for the required key: GOOGLE_WEB_CLIENT_ID
-        private val WEB_CLIENT_ID = BuildConfig.GOOGLE_WEB_CLIENT_ID
+        private val WEB_CLIENT_ID = com.divyansh.cueats.BuildConfig.GOOGLE_WEB_CLIENT_ID
     }
 
     val currentUser: FirebaseUser? get() = auth.currentUser

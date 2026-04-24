@@ -44,7 +44,6 @@ import androidx.glance.layout.ContentScale
 
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
-import com.divyansh.cueats.BuildConfig
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -435,7 +434,7 @@ fun parseCachedMeals(cachedData: String): List<WidgetMealData> {
 }
 
 fun fetchTodayMealsData(context: Context) {
-    val database = FirebaseDatabase.getInstance(BuildConfig.FIREBASE_DATABASE_URL)
+    val database = FirebaseDatabase.getInstance(com.divyansh.cueats.BuildConfig.FIREBASE_DATABASE_URL)
     val mealsRef = database.reference.child("meals")
 
     val todayDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Calendar.getInstance().time)
